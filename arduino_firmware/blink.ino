@@ -3,15 +3,15 @@
 
 void blink_setup() 
 {
-	pinMode(blink.led, OUTPUT);
+	pinMode(_blink.led, OUTPUT);
 }
 
 
 void blink_loop()
 {
-	if (millis() - blink._last_blink > blink.interval) {
-		blink.state = !blink.state;
-		blink._last_blink = millis();
+	if (millis() - _blink._last_blink > blink.interval) {  // TODO make overflow-safe
+		_blink.state = ! _blink.state;
+		_blink._last_blink = millis();
 	}
-	digitalWrite(blink.led, blink.state);
+	digitalWrite(_blink.led, _blink.state);
 }

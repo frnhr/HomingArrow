@@ -2,12 +2,14 @@
 
 #include "C1.h"
 
-void setup() {
-  blink_setup();
+void setup()
+{
+  	serial_setup();
+  	blink_setup();
 }
 
 
-void loop() {
+void loop()
+{
 	blink_loop();
 }
-
