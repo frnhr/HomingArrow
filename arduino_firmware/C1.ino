@@ -5,6 +5,7 @@
 void setup()
 {
   	serial_setup();
+  	encoder_setup();
   	blink_setup();
 }
 
@@ -12,5 +13,6 @@ void setup()
 void loop()
 {
 	serial_loop();
+	encoder_loop();
 	blink_loop();
 }
