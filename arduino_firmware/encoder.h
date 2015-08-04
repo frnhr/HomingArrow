@@ -1,17 +1,31 @@
 
 
+/***** INTERFACES *****/
+
+// does not read other modules
+
+// read interface encoder
+
+// does not write
+
+
+
+/***** INTERFACE *****/
 
 typedef struct {
 	int pins[8];
-	int last_value;
+	unsigned int last_value;
 } EncoderInterface;
 EncoderInterface encoder = {
-	{2, 3, 4, 5, 6, 7, 8, 9},   // pins
-	-1							// last_value
+	{2, 3, 4, 5, 6, 7, 8, 9},  // pins
+	-1                         // last_value
 };
 
+
+/***** INTERNALS *****/
+
 typedef struct {
-	int gray_code;
+	unsigned int gray_code;
 	bool inited;
     const unsigned int GRAY2BIN[256];
 } EncoderInternals;
@@ -55,5 +69,8 @@ EncoderInternals _encoder = {
 };
 
 
+/* PROTOTYPES */
+
 void encoder_setup();
 void encoder_loop();
+void encoder_error(unsigned int value);
