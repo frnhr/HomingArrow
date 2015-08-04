@@ -17,15 +17,16 @@ void encoder_loop()
 			_encoder.gray_code += power(2, i);
 		}
 	}
-	if (_encoder.GRAY2BIN[_encoder.gray_code] == -1) {
-		if (_encoder.inited) {
+	if (_encoder.GRAY2BIN[_encoder.gray_code] < 0) {
+		if (encoder.inited) {
 			encoder_error(_encoder.gray_code);
 		}
 	} else {
-		encoder.last_value = _encoder.GRAY2BIN[_encoder.gray_code];
-		if (! _encoder.inited) {
-			_encoder.inited = true;
+		if (! encoder.inited) {
+			encoder.inited = true;
 		}
+		_encoder.last_value = _encoder.GRAY2BIN[_encoder.gray_code];
+		encoder.azimuth = map_to_circle(encoder.offset + _encoder.last_value / 360.0);
 	}
 }
 

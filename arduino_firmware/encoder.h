@@ -1,4 +1,6 @@
 
+// TODO take out config values!
+
 
 /***** INTERFACES *****/
 
@@ -9,29 +11,34 @@
 // does not write
 
 
-
 /***** INTERFACE *****/
 
 typedef struct {
-	int pins[8];
-	unsigned int last_value;
+    bool inited;                  // whether a good value was ever read
+	const int pins[8];            // Arduino pins that encoder is connected to
+    const double offset;          // Angle from encoder position 0 to the North    
+    double azimuth;               // Angle to the geographic North
 } EncoderInterface;
 EncoderInterface encoder = {
-	{2, 3, 4, 5, 6, 7, 8, 9},  // pins
-	-1                         // last_value
+    false,                      // inited
+	{2, 3, 4, 5, 6, 7, 8, 9},   // pins
+    90.0,                       // offset
+    0.0                         // azimuth
 };
 
 
 /***** INTERNALS *****/
 
 typedef struct {
-	unsigned int gray_code;
-	bool inited;
-    const unsigned int GRAY2BIN[256];
+	unsigned int gray_code;            // raw value read from the encoder
+    unsigned int last_value;           // most recent successfully read value
+    const unsigned int resolution;     // number of positions for a full circle
+    const unsigned int GRAY2BIN[256];  // conversion table
 } EncoderInternals;
 EncoderInternals _encoder = {
 	0,		// gray_code
-	false, 	// inited
+    -1,     // last_value
+    128,    // resolution
     {       // GRAY2BIN
         -1, 56, 40, 55, 24, 0, 39, 52,
         8, 57, -1, -1, 23, -1, 36, 13,
