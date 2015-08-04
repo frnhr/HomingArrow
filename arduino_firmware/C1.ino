@@ -11,5 +11,6 @@ void setup()
 
 void loop()
 {
+	serial_loop();
 	blink_loop();
 }
