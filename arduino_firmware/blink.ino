@@ -12,6 +12,6 @@ void blink_loop()
 	if (millis() - _blink._last_blink > blink.interval) {  // TODO make overflow-safe
 		_blink.state = ! _blink.state;
 		_blink._last_blink = millis();
+		digitalWrite(_blink.led, _blink.state);
 	}
-	digitalWrite(_blink.led, _blink.state);
 }

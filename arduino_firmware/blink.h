@@ -25,12 +25,12 @@ BlinkInterface blink = {
 typedef struct {
 	int led;					// pin
 	bool state;				    // led HIGH or LOW
-	unsigned _last_blink;       // millis of last blink
+	unsigned long _last_blink;	// millis of last blink
 } BlinkInternals;
 BlinkInternals _blink = {
-	13,    // pin 13, built-in LED
-	true,  // state
-	0	   // _last_blink
+	13,    	// pin 13, built-in LED
+	false, 	// state
+	0	   	// _last_blink
 };
 
 
