@@ -14,6 +14,8 @@ void serial_setup()
 void serial_loop()
 {
 
+    char * input;
+
     while (Serial.available()) {
         char incomingByte = (char) Serial.read();
 
@@ -30,22 +32,39 @@ void serial_loop()
         if (_serial.data_received == "status") {
             Serial.print(F("ok 0\n"));
             Serial.print(F("current_lat: "));
-            Serial.print(rad2deg(gps.current_lat));
+            Serial.print(rad2deg(gps.current_lat), 8);
             Serial.print(F("\n"));
             Serial.print(F("current_lon: "));
-            Serial.print(rad2deg(gps.current_lon));
+            Serial.print(rad2deg(gps.current_lon), 8);
             Serial.print(F("\n"));
             Serial.print(F("target_lat: "));
-            Serial.print(rad2deg(gps.target_lat));
+            Serial.print(rad2deg(gps.target_lat), 8);
             Serial.print(F("\n"));
             Serial.print(F("target_lon: "));
-            Serial.print(rad2deg(gps.target_lon));
+            Serial.print(rad2deg(gps.target_lon), 8);
             Serial.print(F("\n"));
             Serial.print(F("gps_az: "));
-            Serial.print(rad2deg(gps.azimuth));
+            Serial.print(rad2deg(gps.azimuth), 8);
             Serial.print(F("\n"));
             Serial.print(F("distance: "));
-            Serial.print(gps.distance);
+            Serial.print(gps.distance, 1);
+            Serial.print(F("\n"));
+        } else if (_serial.data_received.substring(0, 11) == "set_target ") {
+            gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());
+            gps.target_lon = deg2rad(partialString(_serial.data_received.substring(11), ',', 1).toFloat());
+            Serial.print(F("ok 2\n"));
+            Serial.print(rad2deg(gps.target_lat), 8);
+            Serial.print(F("\n"));
+            Serial.print(rad2deg(gps.target_lon), 8);
+            Serial.print(F("\n"));
+        } else if (_serial.data_received.substring(0, 12) == "set_current ") {
+            // TODO mock only!
+            gps.current_lat = deg2rad(partialString(_serial.data_received.substring(12), ',', 0).toFloat());
+            gps.current_lon = deg2rad(partialString(_serial.data_received.substring(12), ',', 1).toFloat());
+            Serial.print(F("ok 2\n"));
+            Serial.print(rad2deg(gps.current_lat), 8);
+            Serial.print(F("\n"));
+            Serial.print(rad2deg(gps.current_lon), 8);
             Serial.print(F("\n"));
         } else {
         	Serial.print(F("error 1\n"));
