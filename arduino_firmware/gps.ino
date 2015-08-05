@@ -30,5 +30,8 @@ void gps_loop()
 			+
 			pow((gps.target_lon - gps.current_lon) * _gps.earth_cr /  2 / M_PI * cos(gps.current_lat), 2)
 		);
+
+		// is target reached:
+		gps.on_target = gps.distance < gps.target_zone;
 	}
 }

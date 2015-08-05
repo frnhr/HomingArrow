@@ -49,6 +49,9 @@ void serial_loop()
             Serial.print(F("distance: "));
             Serial.print(gps.distance, 1);
             Serial.print(F("\n"));
+            Serial.print(F("on_target: "));
+            Serial.print(gps.on_target ? F("True") : F("False"));
+            Serial.print(F("\n"));
         } else if (_serial.data_received.substring(0, 11) == "set_target ") {
             gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());
             gps.target_lon = deg2rad(partialString(_serial.data_received.substring(11), ',', 1).toFloat());
@@ -65,6 +68,11 @@ void serial_loop()
             Serial.print(rad2deg(gps.current_lat), 8);
             Serial.print(F("\n"));
             Serial.print(rad2deg(gps.current_lon), 8);
+            Serial.print(F("\n"));
+        } else if (_serial.data_received.substring(0, 9) == "set_zone ") {
+            gps.target_zone = _serial.data_received.substring(9).toFloat();
+            Serial.print(F("ok 1\n"));
+            Serial.print(rad2deg(gps.target_zone), 1);
             Serial.print(F("\n"));
         } else {
         	Serial.print(F("error 1\n"));

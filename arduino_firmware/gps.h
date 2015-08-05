@@ -16,7 +16,9 @@ typedef struct {
 	double target_lon;	    	// target longitude
 	double target_lat;	    	// target latitude
 	double azimuth;	    	    // azimuth to target
-	double distance;	// target distance
+	double distance;			// target distance
+	double target_zone;			// radius around target coords that is considered to be "on target"
+	bool on_target;				// target reached
 	bool inited;		  		// device is ready
 } GPSInterface;
 GPSInterface gps = {
@@ -26,6 +28,8 @@ GPSInterface gps = {
 	0.0,		// target_lat
 	0.0,		// distance
 	0.0,		// azimuth
+	10.0,		// target_zone
+	false,		// on_target
 	false		// inited
 };
 
