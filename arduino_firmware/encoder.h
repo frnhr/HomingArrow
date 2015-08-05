@@ -33,7 +33,7 @@ typedef struct {
 	unsigned int gray_code;            // raw value read from the encoder
     unsigned int last_value;           // most recent successfully read value
     const unsigned int resolution;     // number of positions for a full circle
-    const unsigned int GRAY2BIN[256];  // conversion table
+    const int GRAY2BIN[256];           // conversion table
 } EncoderInternals;
 EncoderInternals _encoder = {
 	0,		// gray_code
