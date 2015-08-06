@@ -1,3 +1,5 @@
+#ifndef _INCL_C1_COMPASS
+#define _INCL_C1_COMPASS
 
 
 /***** INTERFACES *****/
@@ -42,3 +44,5 @@ CompassInternals _compass = {
 
 void compass_setup();
 void compass_loop();
+
+#endif

@@ -1,4 +1,5 @@
-
+#ifndef _INCL_C1_SERIAL
+#define _INCL_C1_SERIAL
 
 /***** INTERFACES *****/
 
@@ -35,3 +36,4 @@ SerialComm _serial = {
 void serial_setup();
 void serial_loop();
 
+#endif

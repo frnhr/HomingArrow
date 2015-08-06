@@ -16,5 +16,6 @@ void loop()
 	compass_loop();
 	gps_loop();
 	encoder_loop();
+	status_loop();
 	blink_loop();
 }

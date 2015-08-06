@@ -1,4 +1,8 @@
 #include "serial.h"
+#include "status.h"
+#include "encoder.h"
+#include "compass.h"
+#include "gps.h"
 
 
 void serial_setup()
@@ -60,6 +64,12 @@ void serial_loop()
             Serial.print(F("\n"));
             Serial.print(F("magnetic_declination: "));
             Serial.print(rad2deg(compass.magnetic_declination), 2);
+            Serial.print(F("\n"));
+            Serial.print(F("arrow_az: "));
+            Serial.print(rad2deg(status.azimuth), 1);
+            Serial.print(F("\n"));
+            Serial.print(F("delta_az: "));
+            Serial.print(rad2deg(status.azimuth_delta), 1);
             Serial.print(F("\n"));
         } else if (_serial.data_received.substring(0, 11) == "set_target ") {
             gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());

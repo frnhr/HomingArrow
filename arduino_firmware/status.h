@@ -1,24 +1,23 @@
-
-
+#ifndef _INCL_C1_STATUS
+#define _INCL_C1_STATUS
 
 typedef struct
 {
-	float azimuth;
+	float azimuth;			// current arrow azimuth
+	float azimuth_delta;	// difference between desired and current arrow azimuths
 } StatusInterface;
 StatusInterface status = {
-	0.0		// azimuth
+	0.0,		// azimuth
+	0.0,		// azimuth_delta
 };
 
 
 typedef struct
 {
-	float compass_angle;
-	float compass_offset;
-	float gps_azimuth;
+	int ttt;
 } StatusInternals;
 StatusInternals _status = {
-	0.0,	// compass_angle
-	0.0,	// compass_offset
-	0.0		// gps_azimuth
+	1, 		// TODO remove
 };
 
+#endif

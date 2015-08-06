@@ -1,4 +1,5 @@
-
+#ifndef _INCL_C1_BLINK
+#define _INCL_C1_BLINK
 
 /***** INTERFACES *****/
 
@@ -38,3 +39,5 @@ BlinkInternals _blink = {
 
 void blink_setup();
 void blink_loop();
+
+#endif

@@ -7,7 +7,7 @@ void status_loop()
 	if (! compass.inited) return;
 	if (! gps.inited) return;
 
-	// calculate azimuths
-
-
+	// calculate arrow azimuth based on compass na dencoder azimuths
+	status.azimuth = map_to_circle_rad(encoder.azimuth - compass.azimuth);
+	status.azimuth_delta = map_to_half_circle_rad(gps.azimuth - status.azimuth);
 }

@@ -1,3 +1,6 @@
+#ifndef _INCL_C1_GPS
+#define _INCL_C1_GPS
+
 /***** INTERFACES *****/
 
 // does not read other modules
@@ -48,3 +51,5 @@ GPSInternals _gps = {
 
 void gps_setup();
 void gps_loop();
+
+#endif

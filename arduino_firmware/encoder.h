@@ -1,3 +1,6 @@
+#ifndef _INCL_C1_ENCODER
+#define _INCL_C1_ENCODER
+
 
 // TODO take out config values!
 
@@ -85,3 +88,5 @@ EncoderInternals _encoder = {
 void encoder_setup();
 void encoder_loop();
 void encoder_error(unsigned int value);
+
+#endif
