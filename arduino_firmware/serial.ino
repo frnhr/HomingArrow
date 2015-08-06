@@ -78,6 +78,12 @@ void serial_loop()
             Serial.print(F("\n"));
             Serial.print(rad2deg(gps.current_lon), 8);
             Serial.print(F("\n"));
+        } else if (_serial.data_received.substring(0, 12) == "set_compass ") {
+            // TODO mock only!
+            _compass.last_value = deg2rad(map_to_circle(
+                _serial.data_received.substring(12).toFloat()
+            ));
+            Serial.print(F("ok 0\n"));
         } else if (_serial.data_received.substring(0, 9) == "set_zone ") {
             gps.target_zone = _serial.data_received.substring(9).toFloat();
             Serial.print(F("ok 1\n"));
