@@ -13,11 +13,13 @@
 /***** INTERFACE *****/
 
 typedef struct {
-	float azimuth;		// angle away from the north to the east
+	double azimuth;		// angle away from the north to the east
+	double offset;		// offset angle, if compass module or box not mounted northward 
 	bool inited;		// device is ready
 } CompassInterface;
 CompassInterface compass = {
 	-1.0,  	// azimuth
+	0.0,  	// offset
 	false	// inited
 };
 

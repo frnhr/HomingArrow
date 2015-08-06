@@ -16,7 +16,7 @@
 typedef struct {
     bool inited;                  // whether a good value was ever read
 	const int pins[8];            // Arduino pins that encoder is connected to
-    const double offset;          // Angle from encoder position 0 to the North    
+    double offset;                // Angle from encoder position 0 to the North    
     double azimuth;               // Angle to the geographic North
 } EncoderInterface;
 EncoderInterface encoder = {
