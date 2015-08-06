@@ -13,24 +13,28 @@
 /***** INTERFACE *****/
 
 typedef struct {
-	double azimuth;		// angle away from the north to the east
-	bool inited;		// device is ready
-	bool set_north;		// command to set current position as North
+	double azimuth;					// angle away from the north to the east
+	bool inited;					// device is ready
+	bool set_north;					// command to set current position as North
+	double magnetic_declination;	// local compass error due to difference between geographic and magnetic North pole
 } CompassInterface;
 CompassInterface compass = {
-	-1.0,  	// azimuth
+	0.0,  	// azimuth
 	false,	// inited
 	false,	// set_north
+	0.0,  	// magnetic_declination
 };
 
 
 /***** INTERNALS *****/
 
 typedef struct {
-	double offset;		// offset angle, if compass module or box not mounted northward 
+	double offset;		 // offset angle, if compass module or box not mounted northward 
+	double last_value;   // last raw value
 } CompassInternals;
 CompassInternals _compass = {
 	0.0,  	// offset
+	0.0,  	// last_value
 };
 
 

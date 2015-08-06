@@ -58,6 +58,9 @@ void serial_loop()
             Serial.print(F("compass_az: "));
             Serial.print(rad2deg(compass.azimuth), 1);
             Serial.print(F("\n"));
+            Serial.print(F("magnetic_declination: "));
+            Serial.print(rad2deg(compass.magnetic_declination), 2);
+            Serial.print(F("\n"));
         } else if (_serial.data_received.substring(0, 11) == "set_target ") {
             gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());
             gps.target_lon = deg2rad(partialString(_serial.data_received.substring(11), ',', 1).toFloat());
@@ -83,6 +86,9 @@ void serial_loop()
         } else if (_serial.data_received == "set_north") {
             encoder.set_north = true;  // read in encoder_loop()
             compass.set_north = true;  // read in compass_loop()
+            Serial.print(F("ok 0\n"));
+        } else if (_serial.data_received.substring(0, 25) == "set_magnetic_declination ") {
+            compass.magnetic_declination = deg2rad(_serial.data_received.substring(25).toFloat());
             Serial.print(F("ok 0\n"));
         } else {
         	Serial.print(F("error 1\n"));
