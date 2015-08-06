@@ -14,23 +14,23 @@
 
 typedef struct {
 	double azimuth;		// angle away from the north to the east
-	double offset;		// offset angle, if compass module or box not mounted northward 
 	bool inited;		// device is ready
+	bool set_north;		// command to set current position as North
 } CompassInterface;
 CompassInterface compass = {
 	-1.0,  	// azimuth
-	0.0,  	// offset
-	false	// inited
+	false,	// inited
+	false,	// set_north
 };
 
 
 /***** INTERNALS *****/
 
 typedef struct {
-	int ttt;
+	double offset;		// offset angle, if compass module or box not mounted northward 
 } CompassInternals;
 CompassInternals _compass = {
-	1
+	0.0,  	// offset
 };
 
 

@@ -16,14 +16,14 @@
 typedef struct {
     bool inited;                  // whether a good value was ever read
 	const int pins[8];            // Arduino pins that encoder is connected to
-    double offset;                // Angle from encoder position 0 to the North    
     double azimuth;               // Angle to the geographic North
+    bool set_north;               // Command to set current angle as north
 } EncoderInterface;
 EncoderInterface encoder = {
     false,                      // inited
 	{2, 3, 4, 5, 6, 7, 8, 9},   // pins
-    90.0,                       // offset
-    0.0                         // azimuth
+    0.0,                        // azimuth
+    false,                      // set_north
 };
 
 
@@ -33,12 +33,16 @@ typedef struct {
 	unsigned int gray_code;            // raw value read from the encoder
     unsigned int last_value;           // most recent successfully read value
     const unsigned int resolution;     // number of positions for a full circle
+    const unsigned int full_circle;    // value for 360 degrees
+    double offset;                     // value for North    
     const int GRAY2BIN[256];           // conversion table
 } EncoderInternals;
 EncoderInternals _encoder = {
 	0,		// gray_code
     -1,     // last_value
     128,    // resolution
+    256,    // full_circle
+    0,      // offset
     {       // GRAY2BIN
         -1, 56, 40, 55, 24, 0, 39, 52,
         8, 57, -1, -1, 23, -1, 36, 13,

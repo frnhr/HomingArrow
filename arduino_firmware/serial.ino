@@ -44,7 +44,7 @@ void serial_loop()
             Serial.print(rad2deg(gps.target_lon), 8);
             Serial.print(F("\n"));
             Serial.print(F("gps_az: "));
-            Serial.print(rad2deg(gps.azimuth), 8);
+            Serial.print(rad2deg(gps.azimuth), 1);
             Serial.print(F("\n"));
             Serial.print(F("distance: "));
             Serial.print(gps.distance, 1);
@@ -53,10 +53,10 @@ void serial_loop()
             Serial.print(gps.on_target ? F("True") : F("False"));
             Serial.print(F("\n"));
             Serial.print(F("encoder_az: "));
-            Serial.print(encoder.azimuth);
+            Serial.print(rad2deg(encoder.azimuth), 1);
             Serial.print(F("\n"));
             Serial.print(F("compass_az: "));
-            Serial.print(compass.azimuth);
+            Serial.print(rad2deg(compass.azimuth), 1);
             Serial.print(F("\n"));
         } else if (_serial.data_received.substring(0, 11) == "set_target ") {
             gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());
@@ -81,8 +81,8 @@ void serial_loop()
             Serial.print(rad2deg(gps.target_zone), 1);
             Serial.print(F("\n"));
         } else if (_serial.data_received == "set_north") {
-            encoder.offset = encoder.azimuth;
-            compass.offset = compass.azimuth;
+            encoder.set_north = true;  // read in encoder_loop()
+            compass.set_north = true;  // read in compass_loop()
             Serial.print(F("ok 0\n"));
         } else {
         	Serial.print(F("error 1\n"));
