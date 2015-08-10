@@ -9,7 +9,10 @@
 
 // does not write
 
+/***** CONFIGURE *****/
 
+// http://www.magnetic-declination.com/
+// TODO DEFINE MAGNETIC DECLINATION
 
 /***** INTERFACE *****/
 
