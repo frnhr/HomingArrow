@@ -6,6 +6,7 @@ void setup()
   	compass_setup();
   	gps_setup();
   	encoder_setup();
+  	motor_setup();
   	blink_setup();
 }
 
@@ -17,5 +18,6 @@ void loop()
 	gps_loop();
 	encoder_loop();
 	status_loop();
+	motor_loop();
 	blink_loop();
 }
