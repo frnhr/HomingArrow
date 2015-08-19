@@ -1,6 +1,10 @@
 #ifndef _INCL_HOMING_ARROW_COMPASS
 #define _INCL_HOMING_ARROW_COMPASS
 
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_HMC5883_U.h>
+
 
 /***** INTERFACES *****/
 
@@ -33,10 +37,12 @@ CompassInterface compass = {
 typedef struct {
 	double offset;		 // offset angle, if compass module or box not mounted northward 
 	double last_value;   // last raw value
+	Adafruit_HMC5883_Unified sensor;
 } CompassInternals;
 CompassInternals _compass = {
 	0.0,  	// offset
 	0.0,  	// last_value
+	Adafruit_HMC5883_Unified(12345),	// sensor
 };
 
 

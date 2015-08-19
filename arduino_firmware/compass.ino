@@ -1,8 +1,14 @@
 #include "compass.h"
 
+
 void compass_setup()
 {
-	;
+	/* Initialise the sensor */
+	if(!_compass.sensor.begin()) {
+		/* There was a problem detecting the HMC5883 ... check your connections */
+		Serial.println("Ooops, no HMC5883 detected ... Check your wiring!");
+		while(1);
+	}
 }
 
 void compass_loop()
@@ -19,7 +25,12 @@ void compass_loop()
 	if (! compass.inited) compass.inited = true;
 	
 	// read sensor data and calculate raw value
-	// TODO https://github.com/adafruit/Adafruit_HMC5883_Unified/blob/master/examples/magsensor/magsensor.ino
+
+	/* Get a new sensor event */ 
+	sensors_event_t event; 
+	_compass.sensor.getEvent(&event);
+    _compass.last_value = map_to_circle_rad(atan2(event.magnetic.y, event.magnetic.x));
+  
 	// _compass.last_value = _encoder.GRAY2BIN[_encoder.gray_code];
 
 	// set offset if commanded
