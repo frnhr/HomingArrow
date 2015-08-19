@@ -29,7 +29,7 @@ MotorInterface motor = {
 	10,		// pin_az_minus
 	false,	// running
     255,    // full_speed
-    90,     // low_speed
+    80,     // low_speed
 };
 
 
@@ -48,7 +48,7 @@ typedef struct {
 MotorInternals _motor = {
 	0,              // speed
     deg2rad(2.0),   // deadzone
-    deg2rad(10.0),  // deadzone
+    deg2rad(30.0),  // slowzone
     0,              // ramp
     0,              // ramp_start
     0,              // ramp_value

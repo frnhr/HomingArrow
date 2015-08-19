@@ -32,7 +32,10 @@ void motor_loop()
 			// running and should be running
 			digitalWrite(motor.pin_enable, HIGH);
 			if (abs(status.azimuth_delta) < _motor.slowzone) {
-				analogWrite(_motor.active_pin, motor.low_speed);
+				analogWrite(
+					_motor.active_pin, 
+					motor.low_speed + abs(status.azimuth_delta) / _motor.slowzone * ((float) (motor.full_speed - motor.low_speed))
+				);
 			} else {
 				analogWrite(_motor.active_pin, motor.full_speed);				
 			}
