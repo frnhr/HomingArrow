@@ -16,31 +16,28 @@ void motor_loop()
 	if (! motor.running) {
 		if (abs(status.azimuth_delta) > _motor.deadzone) {
 			// start the motor
-			_motor.ramp_start = millis();			
-			_motor.active_pin = (status.azimuth_delta > 0) ? motor.pin_az_minus : motor.pin_az_plus;
-			Serial.println(_motor.active_pin);
+			_motor.active_pin = (status.azimuth_delta > 0.0) ? motor.pin_az_minus : motor.pin_az_plus;
 			// make sure both pins are off:
 			digitalWrite(motor.pin_az_minus, LOW);
 			digitalWrite(motor.pin_az_plus, LOW);
 			// set motor.running flag
 			motor.running = true;
 		} else {
-			// not running and should not be running, all is well...
+			;  // not running and should not be running, all is well...
 		}
 	}
 
 	if (motor.running) {
-		if (abs(status.azimuth_delta) > _motor.deadzone) {
+		if (abs(status.azimuth_delta) > _motor.deadzone / 2.0) {
 			// running and should be running
 			digitalWrite(motor.pin_enable, HIGH);
-			if (millis() - _motor.ramp_start < _motor.ramp) {
-				analogWrite(_motor.active_pin, (int) ((millis() - _motor.ramp_start) * 255.0 / _motor.ramp));
+			if (abs(status.azimuth_delta) < _motor.slowzone) {
+				analogWrite(_motor.active_pin, motor.low_speed);
 			} else {
-				analogWrite(_motor.active_pin, 110);
+				analogWrite(_motor.active_pin, motor.full_speed);				
 			}
 		} else { // (status.azimuth_delta <= _motor.deadzone)
 			// stop it all
-			// TODO follow ramp when stopping
 			motor.running = false;
 			digitalWrite(motor.pin_enable, LOW);
 			digitalWrite(motor.pin_az_minus, LOW);
