@@ -1,5 +1,5 @@
-#ifndef _INCL_C1_ENCODER
-#define _INCL_C1_ENCODER
+#ifndef _INCL_HOMING_ARROW_ENCODER
+#define _INCL_HOMING_ARROW_ENCODER
 
 
 // TODO take out config values!

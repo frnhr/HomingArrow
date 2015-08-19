@@ -3,15 +3,16 @@
 #include "encoder.h"
 #include "compass.h"
 #include "gps.h"
+#include "utils.h"
 
 
 void serial_setup()
 {
 
     Serial.begin(_serial.baud_rate);
-    Serial.print(c1.name);
+    Serial.print(homing_arrow.name);
     Serial.print(" ");
-    Serial.print(c1.version);
+    Serial.print(homing_arrow.version);
     Serial.print("\n");
 }
 

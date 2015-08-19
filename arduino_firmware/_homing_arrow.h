@@ -1,12 +1,11 @@
-#include <math.h>
 #include "utils.h"
 
 typedef struct
 {
 	char * name;
 	char * version;
-} C1;
-C1 c1 = {
-	"pole_drift",  // name
+} HomingArrowInterface;
+HomingArrowInterface homing_arrow = {
+	"Homing Arrow",  // name
 	"0.0.1"		   // version
 };

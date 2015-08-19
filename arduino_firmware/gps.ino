@@ -11,8 +11,8 @@ void gps_loop()
 	// mockup:
 	if (! gps.inited) {
 		gps.inited = true;
-		gps.current_lat = deg2rad(45.2912260);
-		gps.current_lon = deg2rad(13.7491);
+		gps.current_lat = deg2rad(44.0);
+		gps.current_lon = deg2rad(9.0);
 		gps.target_lat = deg2rad(45.0);
 		gps.target_lon = deg2rad(9.0);
 	}

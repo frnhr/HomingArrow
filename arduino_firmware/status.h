@@ -1,5 +1,5 @@
-#ifndef _INCL_C1_STATUS
-#define _INCL_C1_STATUS
+#ifndef _INCL_HOMING_ARROW_STATUS
+#define _INCL_HOMING_ARROW_STATUS
 
 typedef struct
 {

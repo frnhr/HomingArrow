@@ -1,5 +1,5 @@
-#ifndef _INCL_C1_GPS
-#define _INCL_C1_GPS
+#ifndef _INCL_HOMING_ARROW_GPS
+#define _INCL_HOMING_ARROW_GPS
 
 /***** INTERFACES *****/
 

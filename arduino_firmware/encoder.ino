@@ -14,7 +14,7 @@ void encoder_loop()
 	/***** read raw data (Grauy code) from the encoder *****/
 	_encoder.gray_code = 0;
 	for (int i=0; i<8; i++) {
-		if (! digitalRead(encoder.pins[i])) {
+		if (digitalRead(encoder.pins[i])) {
 			_encoder.gray_code += power(2, i);
 		}
 	}
@@ -35,6 +35,13 @@ void encoder_loop()
 	// set "inited" flag
 	if (! encoder.inited) encoder.inited = true;
 	
+	if (_encoder.GRAY2BIN[_encoder.gray_code] != _encoder.last_value) {
+		Serial.print(_encoder.gray_code);
+		Serial.print(" ");
+		Serial.print(_encoder.GRAY2BIN[_encoder.gray_code]);
+		Serial.print("\n");
+	}
+
 	// decode Gray code into binary position
 	_encoder.last_value = _encoder.GRAY2BIN[_encoder.gray_code];
 
@@ -51,6 +58,7 @@ void encoder_loop()
 
 void encoder_error(unsigned int value)
 {
+	return;
 	// TODO can we safely ignore invalid values?
 	Serial.print(F("Invalid encoder value: "));
 	Serial.print(value);

@@ -1,11 +1,11 @@
-#ifndef _INCL_C1_SERIAL
-#define _INCL_C1_SERIAL
+#ifndef _INCL_HOMING_ARROW_SERIAL
+#define _INCL_HOMING_ARROW_SERIAL
 
 /***** INTERFACES *****/
 
 // does not read other modules
 
-// reads c1
+// reads homing_arrow
 
 // writes to status (TODO)
 

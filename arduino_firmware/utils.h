@@ -1,3 +1,8 @@
+#ifndef _INCL_HOMING_ARROW_UTILS
+#define _INCL_HOMING_ARROW_UTILS
+
+#include <math.h>
+
 /**
  * Power function for integers
  * For floats, use built-in pow()
@@ -45,6 +50,20 @@ double map_to_half_circle_rad(double azimuth)
 }
 
 
+double closer_route(double azimuth, double target_azimuth)
+{    
+    double distance = map_to_circle_rad(target_azimuth - azimuth);
+    double delta;
+    
+    if (distance < M_PI) {
+        delta = distance;
+    } else {
+        delta = abs(distance - 2 * M_PI);
+    }
+    return delta;
+}
+
+
 double deg2rad(double deg)
 {
 	return deg * M_PI / 180.0 ;
@@ -73,3 +92,5 @@ String partialString(String data, char separator, int index)
     }
     return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
+
+#endif

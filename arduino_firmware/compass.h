@@ -1,5 +1,5 @@
-#ifndef _INCL_C1_COMPASS
-#define _INCL_C1_COMPASS
+#ifndef _INCL_HOMING_ARROW_COMPASS
+#define _INCL_HOMING_ARROW_COMPASS
 
 
 /***** INTERFACES *****/

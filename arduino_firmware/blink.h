@@ -1,5 +1,5 @@
-#ifndef _INCL_C1_BLINK
-#define _INCL_C1_BLINK
+#ifndef _INCL_HOMING_ARROW_BLINK
+#define _INCL_HOMING_ARROW_BLINK
 
 /***** INTERFACES *****/
 
