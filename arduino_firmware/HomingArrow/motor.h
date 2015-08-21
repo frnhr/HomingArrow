@@ -46,12 +46,14 @@ typedef struct {
     double deadzone;            // deadzone azimuth (deg), motor won't move if within
     double slowzone;            // slowzone azimuth (deg), motor will move with low_speed within
     int active_pin;             // pin_az_plus or pin_az_minus
+    int last_active_pin;        // for comparison with active_pin
 } MotorInternals;
 MotorInternals _motor = {
     0,                        // speed
     deg2rad(MOTOR_DEADZONE),  // deadzone
     deg2rad(MOTOR_SLOWZONE),  // slowzone
     0,                        // active_pin
+    0,                        // last_active_pin
 };
 
 

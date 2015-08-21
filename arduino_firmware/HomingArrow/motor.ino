@@ -33,6 +33,11 @@ void motor_loop()
 		if (fabs(status.azimuth_delta) > _motor.deadzone / 2.0) {
 			// running and should be running
 			digitalWrite(MOTOR_PIN_ENABLE, HIGH);
+			_motor.active_pin = (status.azimuth_delta > 0.0) ? MOTOR_PIN_AZ_MINUS : MOTOR_PIN_AZ_PLUS;
+			if (_motor.active_pin != _motor.last_active_pin) {
+				digitalWrite(MOTOR_PIN_AZ_MINUS, LOW);
+				digitalWrite(MOTOR_PIN_AZ_PLUS, LOW);
+			}
 
 			if (fabs(status.azimuth_delta) < _motor.slowzone) {
 				analogWrite(
@@ -50,4 +55,6 @@ void motor_loop()
 			digitalWrite(MOTOR_PIN_AZ_PLUS, LOW);
 		}
 	}
+
+	_motor.last_active_pin = _motor.active_pin;
 }
