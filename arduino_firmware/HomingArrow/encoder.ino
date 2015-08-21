@@ -1,5 +1,6 @@
 #include "encoder.h"
 
+
 void encoder_setup()
 {
 	for (int i=0; i<8; i++) {
@@ -20,13 +21,11 @@ void encoder_loop()
 	}
 
 	/***** invalid Gray code value *****/
-	if (_encoder.GRAY2BIN[_encoder.gray_code] < 0) {
+	if (pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code) < 0) {
 		if (encoder.inited) {
 			// only report if encoder has been initialized
 			encoder_error(_encoder.gray_code);
 		}
-
-		// abort
 		return;
 	} 
 
@@ -35,15 +34,8 @@ void encoder_loop()
 	// set "inited" flag
 	if (! encoder.inited) encoder.inited = true;
 	
-	if (_encoder.GRAY2BIN[_encoder.gray_code] != _encoder.last_value) {
-		Serial.print(_encoder.gray_code);
-		Serial.print(" ");
-		Serial.print(_encoder.GRAY2BIN[_encoder.gray_code]);
-		Serial.print("\n");
-	}
-
 	// decode Gray code into binary position
-	_encoder.last_value = _encoder.GRAY2BIN[_encoder.gray_code];
+	_encoder.last_value = pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code);
 
 	// set offset if commanded
 	if (encoder.set_north) {
@@ -52,14 +44,14 @@ void encoder_loop()
 	}
 
 	// calculate azimuth (in radians)
-	encoder.azimuth = map_to_circle_rad((_encoder.last_value - _encoder.offset) / _encoder.full_circle * 2 * M_PI);
+	encoder.azimuth = map_to_circle_rad((_encoder.last_value - _encoder.offset) / _encoder.resolution * 2 * M_PI);
 }
 
 
 void encoder_error(unsigned int value)
 {
-	return;
-	// TODO can we safely ignore invalid values?
+	if (_encoder.last_error == value) return;  // only report once
+	_encoder.last_error = value;
 	Serial.print(F("Invalid encoder value: "));
 	Serial.print(value);
 	Serial.print(F("\n"));

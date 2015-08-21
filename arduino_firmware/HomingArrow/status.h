@@ -1,6 +1,31 @@
 #ifndef _INCL_HOMING_ARROW_STATUS
 #define _INCL_HOMING_ARROW_STATUS
 
+
+/***** DEPENDENCIES *****/
+
+#include "status.h"
+#include "encoder.h"
+#include "compass.h"
+#include "gps.h"
+#include "utils.h"
+
+
+/***** CONFIGURATION *****/
+
+//none
+
+
+/***** MODULE *****/
+
+// provides: status
+
+// reads: encoder, compass, gps
+// writes: --
+
+
+/***** INTERFACE *****/
+
 typedef struct
 {
 	float azimuth;			// current arrow azimuth
@@ -12,12 +37,12 @@ StatusInterface status = {
 };
 
 
+/***** INTERNALS *****/
+
 typedef struct
 {
-	int ttt;
+	;
 } StatusInternals;
-StatusInternals _status = {
-	1, 		// TODO remove
-};
+StatusInternals _status = {};
 
 #endif

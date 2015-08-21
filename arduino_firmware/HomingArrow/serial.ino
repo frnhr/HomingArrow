@@ -1,14 +1,9 @@
 #include "serial.h"
-#include "status.h"
-#include "encoder.h"
-#include "compass.h"
-#include "gps.h"
-#include "utils.h"
-
 
 void serial_setup()
 {
 
+    _serial.data_received.reserve(100);
     Serial.begin(_serial.baud_rate);
     Serial.print(homing_arrow.name);
     Serial.print(" ");
@@ -32,9 +27,10 @@ void serial_loop()
     }
 
     if (_serial.reading_complete) {
-
-        // status buffer:
-        if (_serial.data_received == "status") {
+        if (_serial.data_received == F("ping")) {
+            Serial.print("ok 1\n");
+            Serial.print("pong\n");
+        } else if (_serial.data_received == F("status")) {
             Serial.print(F("ok 0\n"));
             Serial.print(F("current_lat: "));
             Serial.print(rad2deg(gps.current_lat), 8);
@@ -64,7 +60,7 @@ void serial_loop()
             Serial.print(rad2deg(compass.azimuth), 1);
             Serial.print(F("\n"));
             Serial.print(F("magnetic_declination: "));
-            Serial.print(rad2deg(compass.magnetic_declination), 2);
+            Serial.print(rad2deg(COMPASS_MAGNETIC_DECLINATION), 2);
             Serial.print(F("\n"));
             Serial.print(F("arrow_az: "));
             Serial.print(rad2deg(status.azimuth), 1);
@@ -72,7 +68,8 @@ void serial_loop()
             Serial.print(F("delta_az: "));
             Serial.print(rad2deg(status.azimuth_delta), 1);
             Serial.print(F("\n"));
-        } else if (_serial.data_received.substring(0, 11) == "set_target ") {
+            
+        } else if (_serial.data_received.substring(0, 11) == F("set_target ")) {
             gps.target_lat = deg2rad(partialString(_serial.data_received.substring(11), ',', 0).toFloat());
             gps.target_lon = deg2rad(partialString(_serial.data_received.substring(11), ',', 1).toFloat());
             Serial.print(F("ok 2\n"));
@@ -80,36 +77,21 @@ void serial_loop()
             Serial.print(F("\n"));
             Serial.print(rad2deg(gps.target_lon), 8);
             Serial.print(F("\n"));
-        } else if (_serial.data_received.substring(0, 12) == "set_current ") {
-            // TODO mock only!
-            gps.current_lat = deg2rad(partialString(_serial.data_received.substring(12), ',', 0).toFloat());
-            gps.current_lon = deg2rad(partialString(_serial.data_received.substring(12), ',', 1).toFloat());
-            Serial.print(F("ok 2\n"));
-            Serial.print(rad2deg(gps.current_lat), 8);
-            Serial.print(F("\n"));
-            Serial.print(rad2deg(gps.current_lon), 8);
-            Serial.print(F("\n"));
-        } else if (_serial.data_received.substring(0, 12) == "set_compass ") {
-            // TODO mock only!
-            _compass.last_value = deg2rad(map_to_circle(
-                _serial.data_received.substring(12).toFloat()
-            ));
-            Serial.print(F("ok 0\n"));
-        } else if (_serial.data_received.substring(0, 9) == "set_zone ") {
+            _loop.slow_timer = 0;
+        } else if (_serial.data_received.substring(0, 9) == F("set_zone ")) {
             gps.target_zone = _serial.data_received.substring(9).toFloat();
             Serial.print(F("ok 1\n"));
             Serial.print(rad2deg(gps.target_zone), 1);
             Serial.print(F("\n"));
-        } else if (_serial.data_received == "set_north") {
+        } else if (_serial.data_received == F("set_north")) {
             encoder.set_north = true;  // read in encoder_loop()
             compass.set_north = true;  // read in compass_loop()
             Serial.print(F("ok 0\n"));
-        } else if (_serial.data_received.substring(0, 25) == "set_magnetic_declination ") {
-            compass.magnetic_declination = deg2rad(_serial.data_received.substring(25).toFloat());
-            Serial.print(F("ok 0\n"));
         } else {
-        	Serial.print(F("error 1\n"));
+        	Serial.print(F("error 2\n"));
         	Serial.print(F("Unknown command\n"));
+            Serial.print(_serial.data_received);
+            Serial.print("\n");
         }
 
         _serial.reading_complete = false;
