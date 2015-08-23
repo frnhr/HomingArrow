@@ -4,6 +4,7 @@
 void setup()
 {
     delay(2000);  // prevent double welcome message
+    battery_setup();
     serial_setup();
     compass_setup();
     gps_setup();
@@ -47,6 +48,7 @@ void realtime_loop()
  */
 void fast_loop()
 {
+    battery_loop();
     compass_loop();
 }
 

@@ -7,7 +7,7 @@
 
 /***** CONFIGURATION *****/
 
-#define VERSION "0.9.0"
+#define VERSION "1.0.0"
 #define NAME "Homing Arrow"
 
 #define LOOP_FAST_INTERVAL 100
@@ -16,30 +16,21 @@
 
 /***** INTERFACE *****/
 
-typedef struct
+struct
 {
-    char * name;
-    char * version;
-} HomingArrowInterface;
-HomingArrowInterface homing_arrow = {
-    NAME,       // name
-    VERSION,    // version
-};
+    char * name = NAME;
+    char * version = VERSION;
+} homing_arrow;
 
 
 /***** INTERNALS *****/
 
-typedef struct
+struct
 {
-    unsigned long now;
-    unsigned long fast_timer;
-    unsigned long slow_timer;
-} LoopInternals;
-LoopInternals _loop = {
-    0,      // now
-    0,      // fast_timer
-    0,      // slow_timer
-};
+    unsigned long now = 0;
+    unsigned long fast_timer = 0;
+    unsigned long slow_timer = 0;
+} _loop;
 
 
 /***** PROTOTYPES *****/

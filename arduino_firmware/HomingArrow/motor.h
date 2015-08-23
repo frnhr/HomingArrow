@@ -13,11 +13,13 @@
 #define MOTOR_PIN_ENABLE 12
 #define MOTOR_PIN_AZ_PLUS 11
 #define MOTOR_PIN_AZ_MINUS 10
-#define MOTOR_MAX_SPEED 255
-#define MOTOR_MIN_SPEED 80
+#define MOTOR_MAX_SPEED 255  // PWM, 255 = 100%
+#define MOTOR_MIN_SPEED 110   // PWM, lower then 100 sometime causes stall when starting, but this is depemndent on gearing, etc.
+#define MOTOR_PIN_ACTIVE_ON_TARGET MOTOR_PIN_AZ_PLUS  // direction of rotation when on target
 
 // TODO move these to status?
-#define MOTOR_DEADZONE 4.0   // degrees
+#define MOTOR_DEADZONE 360.0 / ENCODER_RESOLUTION / 2 * 1.1   // angle erorr that is still ok (not triggering arrow movement)
+															  // 1.1 multiplier defines ammount of overlap between adjecent positioins
 #define MOTOR_SLOWZONE 30.0  // degrees
 
 
@@ -25,34 +27,26 @@
 
 // provides: motor
 
-// reads: status
+// reads: status, gps, encoder
 // writes: --
 
 
 /***** INTERFACE *****/
 
-typedef struct {
-    bool running;
-} MotorInterface;
-MotorInterface motor = {
-    false,  // running
-};
+struct {
+    bool running = false;
+} motor;
 
 
 /***** INTERNALS *****/
 
-typedef struct {
-    int speed;                  // PWM duty cycle
-    double deadzone;            // deadzone azimuth (deg), motor won't move if within
-    double slowzone;            // slowzone azimuth (deg), motor will move with low_speed within
-    int active_pin;             // pin_az_plus or pin_az_minus
-} MotorInternals;
-MotorInternals _motor = {
-    0,                        // speed
-    deg2rad(MOTOR_DEADZONE),  // deadzone
-    deg2rad(MOTOR_SLOWZONE),  // slowzone
-    0,                        // active_pin
-};
+struct {
+    int speed = 0;                              // PWM duty cycle
+    double deadzone = deg2rad(MOTOR_DEADZONE);  // deadzone azimuth (deg), motor won't move if within
+    double slowzone = deg2rad(MOTOR_SLOWZONE);  // slowzone azimuth (deg), motor will move with low_speed within
+    int active_pin = 0;                         // pin_az_plus or pin_az_minus
+    int last_active_pin = 0;                    // for comparison with active_pin
+} _motor;
 
 
 /* PROTOTYPES */
