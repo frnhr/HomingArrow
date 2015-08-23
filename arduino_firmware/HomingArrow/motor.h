@@ -14,11 +14,12 @@
 #define MOTOR_PIN_AZ_PLUS 11
 #define MOTOR_PIN_AZ_MINUS 10
 #define MOTOR_MAX_SPEED 255  // PWM, 255 = 100%
-#define MOTOR_MIN_SPEED 90   // PWM, lower then 90 sometime causes stall when starting
+#define MOTOR_MIN_SPEED 110   // PWM, lower then 100 sometime causes stall when starting, but this is depemndent on gearing, etc.
 #define MOTOR_PIN_ACTIVE_ON_TARGET MOTOR_PIN_AZ_PLUS  // direction of rotation when on target
 
 // TODO move these to status?
-#define MOTOR_DEADZONE 360.0 / ENCODER_RESOLUTION   // degrees
+#define MOTOR_DEADZONE 360.0 / ENCODER_RESOLUTION / 2 * 1.1   // angle erorr that is still ok (not triggering arrow movement)
+															  // 1.1 multiplier defines ammount of overlap between adjecent positioins
 #define MOTOR_SLOWZONE 30.0  // degrees
 
 

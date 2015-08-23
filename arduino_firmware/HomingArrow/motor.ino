@@ -17,7 +17,7 @@ void motor_loop()
 
 	/*** DECIDE WHAT TO DO ***/ 
 
-	_motor.active_pin = 0;	// assume lazy
+	_motor.active_pin = 0;
 	if (gps.on_target) {
 		// spin in one direction
 		_motor.active_pin = MOTOR_PIN_ACTIVE_ON_TARGET;
