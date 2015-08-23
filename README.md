@@ -10,12 +10,12 @@ Pre-configuration includes parameters that can be changed in the Arduino code. T
 Naturally, pre-configuration parameters are such that they rarely (if ever) need to be changed.
 
 
-### Pre-configuration vs EEPROM configuration
+### Pre-configuration vs EEPROM Configuration
 
 Parameters that change during normal operation of the device are stored in Arduino EEPROM, and are accessible via Serial interface. More details below.
 
 
-### List of pre-configuration parameters
+### List of Pre-configuration Parameters
 
 
 ###### `COMPASS_MAGNETIC_DECLINATION`
@@ -53,7 +53,7 @@ There are many additional parameters in the `/***** Configuration *****/` in `.h
 They define things like pins used by the module, hardware-specific constants, EEPROM addresses, etc.
 
 
-## Blink patterns
+## Blink Patterns
 
 Arduino Nano (and most of other Arduino board as well) have a build-in LED on pin 13. We are using this LED to report status of the device.
 
@@ -66,7 +66,7 @@ Arduino Nano (and most of other Arduino board as well) have a build-in LED on pi
 For exact values, see `BLINK_SETUP` and other in `blink.h`.
 
 
-## Serial protocol
+## Serial Protocol
 
 Commands to Arduino are on sent on single line.
 The complete list of available commands is given below.
@@ -119,7 +119,7 @@ This response also returns two lines of additional data. First line explains the
 > NOTE: `2` in `error 2` is **not** an error code!
 
 
-### Available commands
+### Available Commands
 
 These commands are implemented in `serial.ino`.
 
@@ -203,10 +203,10 @@ These two parameters (`N` and `S`) set coordinates to North and South pole, resp
 They are equivalent to specifying coordinates manually (e.g. `90,0` for `N`).
 
 
-## Code and naming conventions
+## Code and Naming Conventions
 
 
-### Project structure
+### Project Structure
 
 Code structure is somewhat uncommon for an Arduino "sketch".
 Reason for this is the objective to keep different logical elements (known as "**modules**") separately and with strictly defined interfaces between them.
@@ -228,7 +228,7 @@ Main module, the sketch that runs other modules, is named `HomingArrow.ino` (it 
 >    This is not required by avrdude (and alternative IDEs such as Stino / Sublime Text), but a quirk of ArduinoIDE.
 
 
-### Module structure
+### Module Structure
 
 
 #### Functions
@@ -238,18 +238,19 @@ Most modules provide two functions:
  * `void my_module_setup()`
  * `void my_module_loop()`
 
- These functions are expected to be called from `void setup()` and `void loop()` respectively.
- Some module loop functions should be throttled (run **not**-as-ofter-as-possible).
- Main `loop()` is expected to handle that, i.e. no internal time tracking is done by module in this regard.
+These functions are expected to be called from `void setup()` and `void loop()` respectively.
 
-Additional function can be provided by the module as required.
+Some module loop functions should be throttled (run **not**-as-ofter-as-possible).
+Main `loop()` is expected to handle that, i.e. no internal time tracking is done by modules in this regard.
 
-**Convention:** All functions should start with module name, e.g. `my_module_foo()`.
+Additional functions can be provided by the module as required.
 
-**Convention:** Function that are meant to be private to the module should start with underscore and the module name, e.g. `_my_module_bar()`.
+**Convention:** All functions should start with module name, e.g. `my_module_foo()`.  
+
+**Convention:** Function that are meant to be private to the module should start with underscore and the module name, e.g. `_my_module_bar()`.  
 
 
-#### Configuration constants
+#### Configuration Constants
 
 All configuration constants, specified with `#define` preprocessor command, should begin with uppercase module name, e.g. `#define MY_MODULE_BAZ_PIN 123`.
 
@@ -270,7 +271,7 @@ And example struct might look like this:
 **Private** struct name should start with an underscore and module name (e.g. `_my_module`).
 
 
-###### Calling module functions
+###### Calling Module Functions
 
 As a rule, modules should never call each others' functions.
 Instead, all function calling should be done from module's `loop` (that is in turn called by the main `loop()`).
@@ -278,11 +279,11 @@ Instead, all function calling should be done from module's `loop` (that is in tu
 Module should expose variables in its public struct.
 All external input should be handled via those variables.
 
-This goes towards reducing call stack, keeping more SRAM available for variables and normal usage. 
+This helps to control call stack depth. In doing so we are keeping more SRAM available for variables and normal usage. 
 For more detail, see [this tutorial on adafruit.com] [2].
 
 
-#### Classes?
+#### Who no Classes?
 
 Usage of structs and naming convention is a compromise between simplicity and using C++ features "the right way". 
 Technically, a better choice would have been to use classes.
