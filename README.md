@@ -1,4 +1,4 @@
-# HomingArrow 1.0.0
+# HomingArrow 1.0.1
 
 Hardware arrow that points to a GPS coordinates.
 
@@ -191,15 +191,15 @@ These two parameters (`N` and `S`) set coordinates to North and South pole, resp
 
 ### Project structure
 
-Code structures is somewhat uncommon for an Arduino "sketch".
-Reason for this is that different logical elements (known as "**modules**") are keeps separately and with strictly defined interfaces between them.
+Code structure is somewhat uncommon for an Arduino "sketch".
+Reason for this is that different logical elements (known as "**modules**") are keept separately and with strictly defined interfaces between them.
 This keeps code clean and easy to understand, and reusable.
 
 Each module has either an `.ino` or a `.h` file, or both. Then are named the same, using lowercase and underscore-separated words (e.g. `my_module.ino`).
 
 Main module, the sketch that runs other modules, is named `HomingArrow.ino` (it also has the corresponding `.h` file). UpperCamelCase in filename is used to distinguish it from other modules.
 
-Note that ArduinoIDE requires that main module (a.k.a. "**sketch**") file is located in a folder with the same name. This is not required by avrdude (and alternative IDEs such as Stino / Sublime Text), but a sole quirk of ArduinoIDE.
+Note that ArduinoIDE requires that main module (a.k.a. "**sketch**") file be located in a folder with the same name. This is not required by avrdude (and alternative IDEs such as Stino / Sublime Text), but a quirk of ArduinoIDE.
 
 
 ### Module structure
@@ -212,7 +212,7 @@ Most modules provide two functions:
  * `void my_module_setup()`
  * `void my_module_loop()`
 
- These two functions are expected to be called from `void setup()` and `void loop()` respectively.
+ These functions are expected to be called from `void setup()` and `void loop()` respectively.
  Some module loop functions should be throttled (run **not**-as-ofter-as-possible).
  Main `loop()` is expected to handle that, i.e. no internal time tracking is done by module in this regard.
 
@@ -258,9 +258,9 @@ For more detail, see [this tutorial on adafruit.com] [2].
 
 #### Classes?
 
-Usage of structs and naming convention is a compromise between simplicity and C++ features. 
-Technically, a better choice would be to use classes.
-However, target audience for most Arduino code is not familiar with advances aspects of C++ language.
+Usage of structs and naming convention is a compromise between simplicity and using C++ features "the right way". 
+Technically, a better choice would have been to use classes.
+However, this approach is deemed a good compromise in order to make the code more understandable to readers without C++ background.
 
 
 
