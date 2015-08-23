@@ -18,12 +18,12 @@ Parameters that change during normal operation of the device are stored in Ardui
 ### List of Pre-configuration Parameters
 
 
-###### `COMPASS_MAGNETIC_DECLINATION`
+###### Parameter `COMPASS_MAGNETIC_DECLINATION`
 
 Fixed angle between magnetic and geographic north pole. This angle greatly varies for different areas on Earth. To find out your local magnetic declination, visit [magnetic-declination.com] [1] 
 
 
-###### `MOTOR_DEADZONE`
+###### Parameter `MOTOR_DEADZONE`
 
 Arrow error angle that is acceptable, i.e. that won't trigger arrow movement. Theoretical limit for the deadzone is:
 
@@ -40,7 +40,7 @@ The `1.1` multiplier gives a small overlap (10%) between adjacent position, prev
 If arrow is still observed to move back and forth in minimal movements, then increase this parameter. Increasing the 1.1 multiplier a fraction (to 1.2) might be enough.
 
 
-###### `MOTOR_MIN_SPEED`
+###### Parameter `MOTOR_MIN_SPEED`
 
 Speed is proportional to the arrow error angle (while inside angle defined in `MOTOR_SLOWZONE`). 
 `MOTOR_MIN_SPEED` controls starting speed of the motor.
@@ -205,6 +205,7 @@ They are equivalent to specifying coordinates manually (e.g. `90,0` for `N`).
 
 ## Code and Naming Conventions
 
+This projects strives to be compliant with guidelines that are spelled out in this section. However, complete compliance is not claimed.
 
 ### Project Structure
 
@@ -221,11 +222,11 @@ Main module, the sketch that runs other modules, is named `HomingArrow.ino` (it 
 >    --------
 >    
 >    Good: `HomingArrow/HomingArrow.ino`  
->    Bad: `code_for_arduino/HomingArrow.ino`  
+>    Bad: `code_for_the_arduino/HomingArrow.ino`  
 >    
 >    --------  
 >    
->    This is not required by avrdude (and alternative IDEs such as Stino / Sublime Text), but a quirk of ArduinoIDE.
+>    This is not required by avrdude (the firmware uploader used by ArduinoIDE) and it certainly is not a C++ requirement. Moreover, some alternative IDEs such as Stino / Sublime Text don't have that restriction. It seems to be an arbitrary restriction, imposed decision by ArduinoIDE for no good apparent reason.
 
 
 ### Module Structure
@@ -240,7 +241,7 @@ Most modules provide two functions:
 
 These functions are expected to be called from `void setup()` and `void loop()` respectively.
 
-Some module loop functions should be throttled (run **not**-as-ofter-as-possible).
+Some module loop functions should be throttled (i.e. called **not**-as-ofter-as-possible).
 Main `loop()` is expected to handle that, i.e. no internal time tracking is done by modules in this regard.
 
 Additional functions can be provided by the module as required.
@@ -283,7 +284,7 @@ This helps to control call stack depth. In doing so we are keeping more SRAM ava
 For more detail, see [this tutorial on adafruit.com] [2].
 
 
-#### Who no Classes?
+#### Why no Classes?
 
 Usage of structs and naming convention is a compromise between simplicity and using C++ features "the right way". 
 Technically, a better choice would have been to use classes.
