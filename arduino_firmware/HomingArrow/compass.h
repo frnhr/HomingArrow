@@ -29,32 +29,19 @@
 
 /***** INTERFACE *****/
 
-typedef struct {
-    double azimuth;                 // angle away from the north to the east
-    bool inited;                    // device is ready
-    bool set_north;                 // command to set current position as North
-} CompassInterface;
-CompassInterface compass = {
-    0.0,                              // azimuth
-    false,                            // inited
-    false,                            // set_north
-};
+struct {
+    double azimuth = 0.0;   // angle away from the north to the east
+    bool inited = false;    // device is ready
+} compass;
 
 
 /***** INTERNALS *****/
 
-typedef struct {
-    double offset;                       // offset angle, if compass module or box not mounted northward 
-    double last_value;                   // last raw value
-    Adafruit_HMC5883_Unified sensor;    
-    sensors_event_t event;
-} CompassInternals;
-CompassInternals _compass = {
-    0.0,                                    // offset
-    0.0,                                    // last_value
-    Adafruit_HMC5883_Unified(COMPASS_UID),  // sensor
-    NULL,                                   // event
-};
+struct {
+    double last_value = 0.0;                        // last raw value
+    Adafruit_HMC5883_Unified sensor = Adafruit_HMC5883_Unified(COMPASS_UID);    // library object, implements serial
+    sensors_event_t event;                   // library event object
+} _compass;
 
 
 /* PROTOTYPES */

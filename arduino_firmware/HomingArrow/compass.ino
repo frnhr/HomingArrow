@@ -27,13 +27,6 @@ void compass_loop()
 	_compass.sensor.getEvent(&_compass.event);
     _compass.last_value = map_to_circle_rad(atan2(_compass.event.magnetic.y, _compass.event.magnetic.x));
   
-
-	// set offset if commanded
-	if (compass.set_north) {
-		compass.set_north = false;
-		_compass.offset = _compass.last_value + COMPASS_MAGNETIC_DECLINATION;
-	}
-
 	/***** Calculate azimuth *****/
-	compass.azimuth = map_to_circle_rad(_compass.last_value - _compass.offset + COMPASS_MAGNETIC_DECLINATION);
+	compass.azimuth = map_to_circle_rad(_compass.last_value + COMPASS_MAGNETIC_DECLINATION);
 }

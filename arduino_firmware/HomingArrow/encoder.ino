@@ -7,6 +7,9 @@ void encoder_setup()
 		pinMode(encoder.pins[i], INPUT_PULLUP);
 	    digitalWrite(encoder.pins[i], HIGH);
 	}
+
+	EEPROM.get(ENCODER_EEPROM_ADDR, encoder.offset);
+	_encoder.offset = encoder.offset;
 }
 
 
@@ -21,7 +24,7 @@ void encoder_loop()
 	}
 
 	/***** invalid Gray code value *****/
-	if (pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code) < 0) {
+	if (pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code) == (byte) -1) {
 		if (encoder.inited) {
 			// only report if encoder has been initialized
 			encoder_error(_encoder.gray_code);
@@ -35,22 +38,23 @@ void encoder_loop()
 	if (! encoder.inited) encoder.inited = true;
 	
 	// decode Gray code into binary position
-	_encoder.last_value = pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code);
+	_encoder.position = pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code);
 
-	// set offset if commanded
-	if (encoder.set_north) {
-		encoder.set_north = false;
-		_encoder.offset = _encoder.last_value;
+	// handle set_offset command
+	if (encoder.offset != _encoder.offset) {
+		encoder.offset = map_to_circle_rad(encoder.offset);
+		_encoder.offset = encoder.offset;
+		EEPROM.put(ENCODER_EEPROM_ADDR, encoder.offset);
 	}
 
 	// calculate azimuth (in radians)
-	encoder.azimuth = map_to_circle_rad((_encoder.last_value - _encoder.offset) / _encoder.resolution * 2 * M_PI);
+	encoder.azimuth = map_to_circle_rad(((float) _encoder.position) / _encoder.resolution * 2 * M_PI - _encoder.offset);
 }
 
 
 void encoder_error(unsigned int value)
 {
-	if (_encoder.last_error == value) return;  // only report once
+	if (_encoder.last_error == value) return;  // only a value report once
 	_encoder.last_error = value;
 	Serial.print(F("Invalid encoder value: "));
 	Serial.print(value);

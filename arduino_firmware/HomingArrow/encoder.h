@@ -5,6 +5,7 @@
 /***** DEPENDENCIES *****/
 
 #include <avr/pgmspace.h>
+#include <EEPROM.h>
 #include "utils.h"
 
 
@@ -12,6 +13,7 @@
 
 #define ENCODER_PINS {2, 3, 4, 5, 6, 7, 8, 9}
 #define ENCODER_RESOLUTION 128
+#define ENCODER_EEPROM_ADDR 0
 #define ENCODER_GRAY_TO_BIN { \
          -1,  56,  40,  55,  24,   0,  39,  52, \
           8,  57,  -1,  -1,  23,  -1,  36,  13, \
@@ -58,40 +60,26 @@
 
 /***** INTERFACE *****/
 
-typedef struct {
-    bool inited;                  // whether a good value was ever read
-    const int pins[8];            // Arduino pins that encoder is connected to
-    double azimuth;               // Angle to the geographic North
-    bool set_north;               // Command to set current angle as north
-} EncoderInterface;
-EncoderInterface encoder = {
-    false,         // inited
-    ENCODER_PINS,  // pins
-    0.0,           // azimuth
-    false,         // set_north
-};
+struct {
+    bool inited = false;                 // whether a good value was ever read
+    const int pins[8] = ENCODER_PINS;   // Arduino pins that encoder is connected to
+    double azimuth = 0.0;               // Angle to the geographic North
+    double offset = 0.0;                // Angle between North and encoder zero position 
+} encoder;
 
 
 /***** INTERNALS *****/
 
+struct {
+    unsigned int gray_code = 0;             // raw value read from the encoder
+    unsigned int position = -1;             // most recent successfully read value
+    unsigned int last_error = -1;           // last error value reported (to prevent repeating)
+    const unsigned int resolution = \
+                    ENCODER_RESOLUTION;     // number of positions for a full circle
+    double offset = 0.0;                    // offset, used unternally
+} _encoder;
 
-typedef struct {
-    unsigned int gray_code;            // raw value read from the encoder
-    unsigned int last_value;           // most recent successfully read value
-    unsigned int last_error;           // last error value reported (to prevent repeating)
-    const unsigned int resolution;     // number of positions for a full circle
-    double offset;                     // value for North    
-} EncoderInternals;
-EncoderInternals _encoder = {
-    0,                     // gray_code
-    -1,                    // last_value
-    -1,                    // last_error
-    ENCODER_RESOLUTION,    // resolution
-    0,                     // offset
-
-};
-
-const PROGMEM char ENCODER_GRAY2BIN[256] = ENCODER_GRAY_TO_BIN;
+const PROGMEM byte ENCODER_GRAY2BIN[256] = ENCODER_GRAY_TO_BIN;
 
 
 /* PROTOTYPES */

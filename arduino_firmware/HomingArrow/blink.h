@@ -3,39 +3,45 @@
 
 /***** DEPENDENCIES *****/
 
-// none
+#include "status.h"
 
+
+/***** CONFIGURATION *****/
+
+#define BLINK_LED 13  // pin 13, built-in LED
+
+// blink patterns:
+#define BLINK_INTERVALS_N 6
+#define BLINK_SETUP {1000, 1000, 0, 0, 0, 0}
+#define BLINK_IDLE {100, 4900, 0, 0, 0, 0}
+#define BLINK_LOW_BATTERY {500, 500, 500, 500, 100, 900}
+#define BLINK_GPS {100, 400, 0, 0, 0, 0}
 
 /***** MODULE *****/
 
 // provides: blink
 
-// reads: none
+// reads: status, battery
 // writes: none
 
 
 /***** INTERFACE *****/
 
-typedef struct {
-    unsigned long interval;     // blink interval, millis
-} BlinkInterface;
-BlinkInterface blink = {
-    1000,         // interval
-};
+struct {
+    unsigned long * pattern = NULL;     // blink pattern, millis
+} blink;
 
 
 /***** INTERNALS *****/
 
-typedef struct {
-    int led;                    // pin
-    bool state;                 // led HIGH or LOW
-    unsigned long _last_blink;  // millis of last blink
-} BlinkInternals;
-BlinkInternals _blink = {
-    13,        // pin 13, built-in LED
-    false,     // state
-    0          // _last_blink
-};
+struct {
+    byte i = 0;                                             // interval pointer
+    unsigned long pattern_setup[6] = BLINK_SETUP;
+    unsigned long pattern_idle[6] = BLINK_IDLE;
+    unsigned long pattern_battery[6] = BLINK_LOW_BATTERY;
+    unsigned long pattern_gps[6] = BLINK_GPS;
+    unsigned long last_blink = 0;                           // millis of last interval transition
+} _blink;
 
 
 /* PROTOTYPES */

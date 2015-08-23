@@ -26,23 +26,16 @@
 
 /***** INTERFACE *****/
 
-typedef struct
+struct
 {
-	float azimuth;			// current arrow azimuth
-	float azimuth_delta;	// difference between desired and current arrow azimuths
-} StatusInterface;
-StatusInterface status = {
-	0.0,		// azimuth
-	0.0,		// azimuth_delta
-};
+    float azimuth = 0.0;          // current arrow azimuth
+    float azimuth_delta = 0.0;    // difference between desired and current arrow azimuths
+    bool inited = false;            // all sensors ready
+} status;
 
 
 /***** INTERNALS *****/
 
-typedef struct
-{
-	;
-} StatusInternals;
-StatusInternals _status = {};
+// none
 
 #endif

@@ -5,7 +5,6 @@
 /***** DEPENDENCIES *****/
 
 #include "status.h"
-#include "encoder.h"
 #include "compass.h"
 #include "gps.h"
 #include "utils.h"
@@ -21,21 +20,15 @@
 // provides: none
 
 // reads: status, homing_arrow
-// writes: --
-
+// writes: gps, compass
 
 /***** INTERNALS *****/
 
-typedef struct {
-    unsigned int baud_rate;
-    String data_received;
-    bool reading_complete;
-} SerialComm;
-SerialComm _serial = {
-    SERIAL_BAUD_RATE,   // baud_rate
-    "",                 // data_received
-    false               // reading_complete
-};
+struct {
+    unsigned int baud_rate = SERIAL_BAUD_RATE;
+    bool reading_complete = false;
+    String data_received = "";
+} _serial;
 
 
 /***** PROTOTYPES *****/

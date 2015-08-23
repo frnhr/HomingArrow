@@ -2,12 +2,22 @@
 
 void gps_setup()
 {
-    _gps.buffer.reserve(100);
+
+    EEPROM.get(GPS_EEPROM_ADDR_LAT, gps.target_lat);
+    EEPROM.get(GPS_EEPROM_ADDR_LON, gps.target_lon);
+    EEPROM.get(GPS_EEPROM_ADDR_ZONE, gps.target_zone);
+
+    gps.set_target_lat = gps.target_lat;
+    gps.set_target_lon = gps.target_lon;
+    _gps.last_target_lat = gps.target_lat;
+    _gps.last_target_lon = gps.target_lon;
+    _gps.target_zone = gps.target_zone;
 
     _gps.sensor.begin(GPS_BAUD_RATE);
 
     // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
     //_gps.sensor.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+
     // uncomment this line to turn on only the "minimum recommended" data
     _gps.sensor.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
     // For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
@@ -48,33 +58,62 @@ SIGNAL(TIMER0_COMPA_vect) {
 void gps_loop()
 {
 
-    if (!_gps.sensor.newNMEAreceived()) return;
-    if (!_gps.sensor.parse(_gps.sensor.lastNMEA())) return;
-        
-    if (!gps.inited && _gps.sensor.fix) {
-        gps.inited = true;
+    /*** read set_target command ***/
+    if (gps.set_target_lat != _gps.last_target_lat || gps.set_target_lon != _gps.last_target_lon) {
+        _gps.last_target_lat = gps.set_target_lat;
+        _gps.last_target_lon = gps.set_target_lon;
+        gps.target_lat = gps.set_target_lat;
+        gps.target_lon = gps.set_target_lon;
+        EEPROM.put(GPS_EEPROM_ADDR_LAT, gps.set_target_lat);
+        EEPROM.put(GPS_EEPROM_ADDR_LON, gps.set_target_lon);
     }
 
+    /*** handle set_zone command ***/
+    if (gps.target_zone != _gps.target_zone) {
+        _gps.target_zone = gps.target_zone;
+        EEPROM.put(GPS_EEPROM_ADDR_ZONE, gps.target_zone);
+    }
+
+    /*** GPS boilerplate ***/
+
+    // received data from GPS:
+    if (!_gps.sensor.newNMEAreceived()) return;
+
+    // succesfully parsed the data:
+    if (!_gps.sensor.parse(_gps.sensor.lastNMEA())) return;
+
+    // have GPS satellite fix:
+    if ((!gps.inited) && (!_gps.sensor.fix)) return;
+        
+    // publish that module is now inited:
+    if (!gps.inited) gps.inited = true;
+
+    // if we have fix, update (otherwize work with old data)
+    // TODO perhaps implement a timeout on the old data?
     if (_gps.sensor.fix) {
+        // we work with radians...
         gps.current_lat = deg2rad(_gps.sensor.latitudeDegrees);
         gps.current_lon = deg2rad(_gps.sensor.longitudeDegrees);
     }
 
-    // calculate azimuth and distance
-    if (gps.inited) {
-        gps.azimuth = map_to_circle_rad(M_PI / 2 - atan2(
-            gps.target_lat - gps.current_lat,
-            gps.target_lon - gps.current_lon
-        ));
+    /*** Calculate Stuff ***/
 
-        // Flat Earth approximation (ok because we only ever use distance for determining if on-target)
-        gps.distance = sqrt(
-            pow((gps.target_lat - gps.current_lat) * GPS_EARTH_CIRCUMFERRENCE /  2 / M_PI, 2) 
-            +
-            pow((gps.target_lon - gps.current_lon) * GPS_EARTH_CIRCUMFERRENCE /  2 / M_PI * cos(gps.current_lat), 2)
-        );
+    gps.azimuth = map_to_circle_rad(M_PI / 2 - atan2(
+        gps.target_lat - gps.current_lat,
+        cos(gps.target_lat) * (gps.target_lon - gps.current_lon)
+    ));
 
-        // is target reached:
-        gps.on_target = gps.distance < gps.target_zone;
-    }
+    // Flat Earth approximation
+    // it's ok because we only ever use distance for determining if on-target
+    gps.distance = sqrt(
+        pow((gps.target_lat - gps.current_lat) * GPS_EARTH_CIRCUMFERRENCE / 2.0 / M_PI, 2) 
+        +
+        pow((gps.target_lon - gps.current_lon) * GPS_EARTH_CIRCUMFERRENCE / 2.0 / M_PI * cos(gps.current_lat), 2)
+    );
+
+    // Check if Target Reached
+    gps.on_target = gps.distance < _gps.target_zone;
+
+    // Publish fix
+    gps.fix = _gps.sensor.fix;
 }
