@@ -218,11 +218,13 @@ Main module, the sketch that runs other modules, is named `HomingArrow.ino` (it 
 
 >  Note that ArduinoIDE requires that main module (a.k.a. "**sketch**") file be located in a folder with the same name. 
 >      
-> --
+>    --------
+>    
 >    Good: `HomingArrow/HomingArrow.ino`  
 >    Bad: `code_for_arduino/HomingArrow.ino`  
 >    
-> --  
+>    --------  
+>    
 >    This is not required by avrdude (and alternative IDEs such as Stino / Sublime Text), but a quirk of ArduinoIDE.
 
 
