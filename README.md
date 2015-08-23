@@ -1,4 +1,4 @@
-# HomingArrow 1.0.1
+# HomingArrow 1.0.2
 
 Hardware arrow that points to a GPS coordinates.
 
