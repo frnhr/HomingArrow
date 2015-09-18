@@ -7,7 +7,7 @@
 
 /***** CONFIGURATION *****/
 
-#define VERSION "1.0.2"
+#define VERSION "1.0.3"
 #define NAME "Homing Arrow"
 
 #define LOOP_FAST_INTERVAL 100
