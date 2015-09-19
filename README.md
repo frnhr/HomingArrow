@@ -128,12 +128,12 @@ Command (single line)            | Response | Additional data & Description
 ---------------------------------|----------|--------------------------------------------------------------
 ping                             | ok 2     | Device name and version.
 status                           | ok 13    | Many aspects of the device operation, see below.
-set_target N                     | ok 2     | Sets target to North, useful for troubleshooting.
-set_target S                     | ok 2     | Sets target to South, useful for troubleshooting.
-set_target 12.3456768,23.4567890 | ok 2     | Set target to provided coordinates, see below for details.
-set_zone 3.5                     | ok 1     | Sets target zone to provided number of **meters**.
-set_offset 23                    | ok 1     | Sets offset for the arrow pointer to the provided angle (degrees). This is useful if hardware structure requires components to be put in non-parallel orientation.
+set_target 12.3456768,23.4567890 | ok 2     | Set target to provided coordinates, see below for details. **Saved in EEPROM**.
+set_zone 3.5                     | ok 1     | Sets target zone to provided number of **meters**. **Saved in EPROM**. 
+set_offset 23                    | ok 1     | Sets offset for the arrow pointer to the provided angle (degrees). This is useful if hardware structure requires components to be put in non-parallel orientation. **Saved in EPROM**.
 
+
+All values that are saved in **EEPROM** are retrieved from there after device power up. This means that batteries can be changes without losing GPS target and other configuration.
 
 #### Command `status`
 
@@ -191,6 +191,8 @@ Bad:
     set_target 12.3456 23.45687
     set_target 12 23
     set_target12.3456,23.45687
+
+Target coordinates are saved in **EEPROM**, and retrieved from there in case of power failure (or if the device is powered off).
 
 A handy way to get GPS coordinates is using [itouchmap.com] [3] web site.
 

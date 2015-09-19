@@ -57,7 +57,6 @@ SIGNAL(TIMER0_COMPA_vect) {
 
 void gps_loop()
 {
-
     /*** read set_target command ***/
     if (gps.set_target_lat != _gps.last_target_lat || gps.set_target_lon != _gps.last_target_lon) {
         _gps.last_target_lat = gps.set_target_lat;
@@ -74,8 +73,15 @@ void gps_loop()
         EEPROM.put(GPS_EEPROM_ADDR_ZONE, gps.target_zone);
     }
 
-    /*** GPS boilerplate ***/
+////////// TEMP ///////////
+/*
+gps.current_lat = deg2rad(45.29866);
+gps.current_lon = deg2rad(13.625536);
+gps.inited = true;
+*/
 
+    /*** GPS boilerplate ***/
+    
     // received data from GPS:
     if (!_gps.sensor.newNMEAreceived()) return;
 
@@ -116,4 +122,6 @@ void gps_loop()
 
     // Publish fix
     gps.fix = _gps.sensor.fix;
+//gps.fix = true; 
+
 }

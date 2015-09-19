@@ -6,7 +6,8 @@
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_HMC5883_U.h>
+#include <Adafruit_LSM303.h>
+#include <math.h>
 #include "motor.h"
 #include "utils.h"
 
@@ -16,8 +17,7 @@
 // Local compass error due to difference between geographic and magnetic North pole.
 #define COMPASS_MAGNETIC_DECLINATION 0.0  // In degrees, see: http://www.magnetic-declination.com/
 
-#define COMPASS_UID 12345
-
+#define COMPASS_MAX_ACCEL 1050  // Vertical acceleration (m/s2), not very precise
 
 /***** MODULE *****/
 
@@ -38,9 +38,12 @@ struct {
 /***** INTERNALS *****/
 
 struct {
-    double last_value = 0.0;                        // last raw value
-    Adafruit_HMC5883_Unified sensor = Adafruit_HMC5883_Unified(COMPASS_UID);    // library object, implements serial
-    sensors_event_t event;                   // library event object
+    double last_value = 0.0;                 // last raw value
+    double corrected_x = 0.0;
+    double corrected_y = 0.0;
+    double alpha_x = 0.0;
+    double alpha_y = 0.0;
+    Adafruit_LSM303 sensor;    // library object, implements serial
 } _compass;
 
 

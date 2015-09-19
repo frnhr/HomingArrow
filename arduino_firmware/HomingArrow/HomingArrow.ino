@@ -3,7 +3,7 @@
 
 void setup()
 {
-    delay(2000);  // prevent double welcome message
+    delay(500);  // prevent double welcome message
     battery_setup();
     serial_setup();
     compass_setup();
