@@ -104,6 +104,35 @@ void serial_loop()
             Serial.print(F("ok 1\n"));
             Serial.print(rad2deg(encoder.offset), 1);
             Serial.print(F("\n"));
+        } else if (_serial.data_received == F("compass_data")) {
+            Serial.print(F("ok 5\n"));
+            Serial.print("Inited:\t");
+            Serial.print(compass.inited ? F("Yes") : F("No"));
+            Serial.print("\n");
+            Serial.print("magData:\t");
+            Serial.print(_compass.sensor.magData.x);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.magData.y);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.magData.z);
+            Serial.print("\n");
+            Serial.print("accelData:\t");
+            Serial.print(_compass.sensor.accelData.x);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.accelData.y);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.accelData.z);
+            Serial.print("\n");
+            Serial.print("alpha x y:\t");
+            Serial.print(_compass.alpha_x);
+            Serial.print(" ");
+            Serial.print(_compass.alpha_y);
+            Serial.print("\n");
+            Serial.print("corrected:\t");
+            Serial.print(_compass.corrected_x);
+            Serial.print(" ");
+            Serial.print(_compass.corrected_y);
+            Serial.print("\n");
         } else {
         	Serial.print(F("error 2\n"));
         	Serial.print(F("Unknown command\n"));
