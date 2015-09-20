@@ -15,9 +15,9 @@
 /***** CONFIGURATION *****/
 
 // Local compass error due to difference between geographic and magnetic North pole.
-#define COMPASS_MAGNETIC_DECLINATION 0.0  // In degrees, see: http://www.magnetic-declination.com/
+#define COMPASS_MAGNETIC_DECLINATION 3.2  // In degrees, see: http://www.magnetic-declination.com/
 
-#define COMPASS_MAX_ACCEL 1050  // Vertical acceleration (m/s2), not very precise
+#define COMPASS_AVERAGE_BUFFER 1
 
 /***** MODULE *****/
 
@@ -38,12 +38,17 @@ struct {
 /***** INTERNALS *****/
 
 struct {
-    double last_value = 0.0;                 // last raw value
-    double corrected_x = 0.0;
-    double corrected_y = 0.0;
-    double alpha_x = 0.0;
-    double alpha_y = 0.0;
-    Adafruit_LSM303 sensor;    // library object, implements serial
+    double phi = 0.0;        // roll
+    double theta = 0.0;      // pitch
+    double alpha = deg2rad(COMPASS_MAGNETIC_DECLINATION);
+    double delta = 0.0;      // magnetic dip
+    double psi = 0.0;        // yaw
+    long B = 0;              // magnetic vector module
+    double Dx = 0.0;         // shortcut
+    double Dy = 0.0;         // shortcut
+    Adafruit_LSM303 sensor;  // library object, implements serial
+    double average[COMPASS_AVERAGE_BUFFER];
+    int average_i = 0;
 } _compass;
 
 

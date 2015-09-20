@@ -92,7 +92,7 @@ gps.inited = true;
     if ((!gps.inited) && (!_gps.sensor.fix)) return;
         
     // publish that module is now inited:
-    if (!gps.inited) gps.inited = true;
+    gps.inited = true;
 
     // if we have fix, update (otherwize work with old data)
     // TODO perhaps implement a timeout on the old data?

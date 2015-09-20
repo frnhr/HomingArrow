@@ -15,6 +15,7 @@ void motor_setup()
 void motor_loop()
 {
 
+
 	/*** DECIDE WHAT TO DO ***/ 
 
 	_motor.active_pin = 0;
@@ -25,6 +26,26 @@ void motor_loop()
 		if (fabs(status.azimuth_delta) > _motor.deadzone) {
 			_motor.active_pin = (status.azimuth_delta > 0.0) ? MOTOR_PIN_AZ_MINUS : MOTOR_PIN_AZ_PLUS;
 		}
+	}
+
+	/** DEBUG **/
+
+	if (!motor.running && _motor.active_pin) {
+            Serial.print("magData:\t");
+            Serial.print(_compass.sensor.magData.x);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.magData.y);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.magData.z);
+            Serial.print("\n");
+            Serial.print("accelData:\t");
+            Serial.print(_compass.sensor.accelData.x);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.accelData.y);
+            Serial.print(" ");
+            Serial.print(_compass.sensor.accelData.z);
+            Serial.print("\n");
+            Serial.print("\n");
 	}
 
 	/*** DO IT ***/

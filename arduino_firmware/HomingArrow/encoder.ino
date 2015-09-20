@@ -35,7 +35,7 @@ void encoder_loop()
 	/***** normal operation *****/
 
 	// set "inited" flag
-	if (! encoder.inited) encoder.inited = true;
+	encoder.inited = true;
 	
 	// decode Gray code into binary position
 	_encoder.position = pgm_read_byte_near(ENCODER_GRAY2BIN + _encoder.gray_code);

@@ -35,7 +35,7 @@ void serial_loop()
             Serial.print(homing_arrow.version);
             Serial.print(F("\n"));
         } else if (_serial.data_received == F("status")) {
-            Serial.print(F("ok 13\n"));
+            Serial.print(F("ok 14\n"));
             Serial.print(F("current_lat: "));
             Serial.print(rad2deg(gps.current_lat), 8);
             Serial.print(F("\n"));
@@ -50,6 +50,13 @@ void serial_loop()
             Serial.print(F("\n"));
             Serial.print(F("distance: "));
             Serial.print(gps.distance, 1);
+            Serial.print(F("\n"));
+            Serial.print(F("azimuth: "));
+            Serial.print(rad2deg(status.azimuth));
+            Serial.print(F(" "));
+            Serial.print(rad2deg(compass.azimuth));
+            Serial.print(F(" "));
+            Serial.print(rad2deg(encoder.azimuth));
             Serial.print(F("\n"));
             Serial.print(F("gps_fix: "));
             Serial.print(gps.fix ? F("True") : F("False"));
@@ -105,7 +112,7 @@ void serial_loop()
             Serial.print(rad2deg(encoder.offset), 1);
             Serial.print(F("\n"));
         } else if (_serial.data_received == F("compass_data")) {
-            Serial.print(F("ok 5\n"));
+            Serial.print(F("ok 4\n"));
             Serial.print("Inited:\t");
             Serial.print(compass.inited ? F("Yes") : F("No"));
             Serial.print("\n");
@@ -123,15 +130,17 @@ void serial_loop()
             Serial.print(" ");
             Serial.print(_compass.sensor.accelData.z);
             Serial.print("\n");
-            Serial.print("alpha x y:\t");
-            Serial.print(_compass.alpha_x);
+            Serial.print("roll pitch yaw:\t");
+            Serial.print(rad2deg(_compass.phi));
             Serial.print(" ");
-            Serial.print(_compass.alpha_y);
+            Serial.print(rad2deg(_compass.theta));
+            Serial.print(" ");
+            Serial.print(rad2deg(_compass.psi));
             Serial.print("\n");
-            Serial.print("corrected:\t");
-            Serial.print(_compass.corrected_x);
+            Serial.print("alpha delta:\t");
+            Serial.print(rad2deg(_compass.alpha));
             Serial.print(" ");
-            Serial.print(_compass.corrected_y);
+            Serial.print(rad2deg(_compass.delta));
             Serial.print("\n");
         } else {
         	Serial.print(F("error 2\n"));
