@@ -124,13 +124,15 @@ This response also returns two lines of additional data. First line explains the
 These commands are implemented in `serial.ino`.
 
 
-Command (single line)            | Response | Additional data & Description
----------------------------------|----------|--------------------------------------------------------------
-ping                             | ok 2     | Device name and version.
-status                           | ok 13    | Many aspects of the device operation, see below.
-set_target 12.3456768,23.4567890 | ok 2     | Set target to provided coordinates, see below for details. **Saved in EEPROM**.
-set_zone 3.5                     | ok 1     | Sets target zone to provided number of **meters**. **Saved in EPROM**. 
-set_offset 23                    | ok 1     | Sets offset for the arrow pointer to the provided angle (degrees). This is useful if hardware structure requires components to be put in non-parallel orientation. **Saved in EPROM**.
+Command (single line)              | Response | Additional data & Description
+-----------------------------------|----------|--------------------------------------------------------------
+ping                               | ok 2     | Device name and version.
+status                             | ok 13    | Many aspects of the device operation, see below.
+set_target 12.3456768,23.4567890   | ok 2     | Set target to provided coordinates, see below for details. **Saved in EEPROM**.
+set_zone 3.5                       | ok 1     | Sets target zone to provided number of **meters**. **Saved in EPROM**. 
+set_offset 23                      | ok 1     | Sets offset for the arrow pointer to the provided angle (degrees). This is useful if hardware structure requires components to be put in non-parallel orientation. **Saved in EPROM**.
+gps_override 12.3456768,23.4567890 | ok 2     | For troubleshooting only. This command sets current GPS coordiantes to provided values and prevent updates by real GPS data. 
+gps_override off                   | ok 1     | Turns off GPS override function, restoring normal GPS module operation. Note: If GPS module has not acquired a fix, data set by gps_override comamand will remain active until a fix is obtained.
 
 
 All values that are saved in **EEPROM** are retrieved from there after device power up. This means that batteries can be changes without losing GPS target and other configuration.
