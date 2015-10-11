@@ -30,7 +30,7 @@ void motor_loop()
 
 	/** DEBUG **/
 
-	if (!motor.running && _motor.active_pin) {
+	if (0 && !motor.running && _motor.active_pin) {
             Serial.print("magData:\t");
             Serial.print(_compass.sensor.magData.x);
             Serial.print(" ");
