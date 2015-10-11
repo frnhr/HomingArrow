@@ -73,33 +73,39 @@ void gps_loop()
         EEPROM.put(GPS_EEPROM_ADDR_ZONE, gps.target_zone);
     }
 
-////////// TEMP ///////////
-/*
-gps.current_lat = deg2rad(45.29866);
-gps.current_lon = deg2rad(13.625536);
-gps.inited = true;
-*/
 
-    /*** GPS boilerplate ***/
-    
-    // received data from GPS:
-    if (!_gps.sensor.newNMEAreceived()) return;
+    if (_gps.override) {
+        /*** OVERRIDE ***/
+        gps.inited = true;
+        gps.fix = true;
 
-    // succesfully parsed the data:
-    if (!_gps.sensor.parse(_gps.sensor.lastNMEA())) return;
+    } else {
 
-    // have GPS satellite fix:
-    if ((!gps.inited) && (!_gps.sensor.fix)) return;
+        /*** READ SENSOR DATA ***/
         
-    // publish that module is now inited:
-    gps.inited = true;
+        // received data from GPS:
+        if (!_gps.sensor.newNMEAreceived()) return;
 
-    // if we have fix, update (otherwize work with old data)
-    // TODO perhaps implement a timeout on the old data?
-    if (_gps.sensor.fix) {
-        // we work with radians...
-        gps.current_lat = deg2rad(_gps.sensor.latitudeDegrees);
-        gps.current_lon = deg2rad(_gps.sensor.longitudeDegrees);
+        // succesfully parsed the data:
+        if (!_gps.sensor.parse(_gps.sensor.lastNMEA())) return;
+
+        // have GPS satellite fix:
+        if ((!gps.inited) && (!_gps.sensor.fix)) return;
+            
+        // publish that module is now inited:
+        gps.inited = true;
+
+        // if we have fix, update (otherwize work with old data)
+        // TODO perhaps implement a timeout on the old data?
+        if (_gps.sensor.fix) {
+            // we work with radians...
+            gps.current_lat = deg2rad(_gps.sensor.latitudeDegrees);
+            gps.current_lon = deg2rad(_gps.sensor.longitudeDegrees);
+
+        }
+
+        // Publish fix
+        gps.fix = _gps.sensor.fix;
     }
 
     /*** Calculate Stuff ***/
@@ -119,9 +125,4 @@ gps.inited = true;
 
     // Check if Target Reached
     gps.on_target = gps.distance < _gps.target_zone;
-
-    // Publish fix
-    gps.fix = _gps.sensor.fix;
-//gps.fix = true; 
-
 }

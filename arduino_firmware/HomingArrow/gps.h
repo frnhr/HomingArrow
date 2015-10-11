@@ -68,6 +68,7 @@ struct {
     double last_target_lat = 0.0;
     double last_target_lon = 0.0;
     double target_zone = 0.0;
+    bool override = false;         // for troubleshooting, prevent data updates
 } _gps;
 
 
