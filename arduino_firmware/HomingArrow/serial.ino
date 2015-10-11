@@ -142,12 +142,20 @@ void serial_loop()
             Serial.print(" ");
             Serial.print(rad2deg(_compass.delta));
             Serial.print("\n");
-        } else if (_serial.data_received == F("gps_override off")) {
+        } else if (_serial.data_received == F("gps_override off")) {            
+            Serial.print(F("ok 1\n"));
             _gps.override = false;
+            _loop.slow_timer = 0;
         } else if (_serial.data_received.substring(0, 13) == F("gps_override ")) {
             gps.current_lat = deg2rad(partialString(_serial.data_received.substring(13), ',', 0).toFloat());
             gps.current_lon = deg2rad(partialString(_serial.data_received.substring(13), ',', 1).toFloat());
             _gps.override = true;
+            Serial.print(F("ok 2\n"));
+            Serial.print(rad2deg(gps.current_lat), 8);
+            Serial.print(F("\n"));
+            Serial.print(rad2deg(gps.current_lon), 8);
+            Serial.print(F("\n"));
+            _loop.slow_timer = 0;
         } else {
         	Serial.print(F("error 2\n"));
         	Serial.print(F("Unknown command\n"));
