@@ -1,0 +1,10 @@
+#ifndef HARDWARE_OPTIONS_H
+#define HARDWARE_OPTIONS_H
+
+
+#define HARDWARE_MEGA 1
+#define HARDWARE_PRO_MINI 2
+#define HARDWARE_1284 4
+
+
+#endif  // #ifndef HARDWARE_OPTIONS_H
