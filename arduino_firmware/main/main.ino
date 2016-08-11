@@ -14,7 +14,7 @@
 #define MODULE_MAX_N 15
 #include "modules.hpp"
 
-#include "_ram_usage.ino.h"
+#include "_ram_usage.ino.hpp"
 
 #include "_blink.ino.hpp"
 #include "_encoder.ino.hpp"
