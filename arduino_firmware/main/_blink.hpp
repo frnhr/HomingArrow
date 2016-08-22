@@ -39,17 +39,15 @@ class Blink: public Module
 {
 private:
   uint16_t * pattern;
-  uint8_t pattern_i;
+  uint8_t _pattern_i;
   unsigned long last_blink;
 
 public:
-  uint16_t patterns[BLINK_INTERVALS_N * BLINK_PATTERNS_N + 1];
+  uint16_t patterns[BLINK_INTERVALS_N * BLINK_PATTERNS_N + 1] = {BLINK_PATTERNS};
   int8_t set_pattern;
+  uint8_t pattern_i;
   void setup();
   void loop();
-  Blink():
-    patterns{BLINK_PATTERNS}
-  {};
 };
 
 Blink* blink = (Blink*) ModulesRegistry::add(new Blink());

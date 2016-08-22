@@ -4,10 +4,9 @@
 
 /***** DEPENDENCIES *****/
 
-#include "status.h"
 #include "_encoder.hpp"
 #include "_compass.hpp"
-#include "gps.h"
+#include "_gps.hpp"
 #include "utils.h"
 
 

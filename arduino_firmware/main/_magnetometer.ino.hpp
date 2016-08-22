@@ -1,66 +1,67 @@
 #include <Arduino.h>
 #include "modules.hpp"
-#include "hardware_config.h"
-
-#include "_magnetometer.hpp"
 
 
 // Unlike header file (.hpp), module implementation file (.ino.h) must not be included multiple times:
-#ifdef MAGNETIMETER_INO_HPP
+#ifdef MAGNETOMETER_INO_HPP
 #error The .ino.hpp file of a module can be included only once (and should be included from main.ino). Did you wanted to include the .hpp file instead?
 #endif
-#define MAGNETIMETER_INO_HPP
+#define MAGNETOMETER_INO_HPP
+#include "_magnetometer.hpp"
 
 
 void Magnetometer::setup()
 {
-    /* Initialise the sensor */
-    if(!sensor.begin()) {
-        /* There was a problem detecting the HMC5883 ... check your connections */
-        Serial.print(F("No LS303 detected!\n"));
-        Serial.flush();
-        while(1);
-    }
+  Serial.print(F("[magnetometer   ]\t"));
 }
 
 
 void Magnetometer::loop()
 {
+  // read setters and copy to internal:
+  // ... also apply calibration if available:
+  if (setX != MAGNETOMETER_NULL_VALUE) {
+    _x = setX;
+    #ifdef MAG_CALIBRATION_HPP
+      if (!mag_calibration->calibrated && !magnetometer->calibrating) {
+        _x = (_x - mag_calibration->x_min) * MAGNETOMETER_RESOLUTION / mag_calibration->x_range;
+      }
+    #endif
+    setX = MAGNETOMETER_NULL_VALUE;
+  }
+  if (setY != MAGNETOMETER_NULL_VALUE) {
+    _y = setY;
+    #ifdef MAG_CALIBRATION_HPP
+      if (!mag_calibration->calibrated && !magnetometer->calibrating) {
+        _y = (_y - mag_calibration->y_min) * MAGNETOMETER_RESOLUTION / mag_calibration->y_range;
+      }
+    #endif
+    setY = MAGNETOMETER_NULL_VALUE;
+  }
+  if (setZ != MAGNETOMETER_NULL_VALUE) {
+    _z = setZ;
+    #ifdef MAG_CALIBRATION_HPP
+      if (!mag_calibration->calibrated && !magnetometer->calibrating) {
+        _z = (_z - mag_calibration->z_min) * MAGNETOMETER_RESOLUTION / mag_calibration->z_range;
+      }
+    #endif
+    setY = MAGNETOMETER_NULL_VALUE;
+  }
 
-  // don't read compass while motor is running, because of possible magnetic interference:
-  #ifdef MOTOR_H
-  if (motor.running) return;
-  #endif
+  // copy internal values to public getters:
+  // ... on boot internal values will be unset, so check for that as well:
+  if (_x != MAGNETOMETER_NULL_VALUE) {
+    x = _x;
+  }
+  if (_y != MAGNETOMETER_NULL_VALUE) {
+    y = _y;
+  }
+  if (_z != MAGNETOMETER_NULL_VALUE) {
+    z = _z;
+  }
 
-  uint16_t now = millis();
-
-  // don't read too often, magnetometer might stall:
-  if (now - last_read_millis < MAGNETOMETER_READ_INTERVAL) return;
-  last_read_millis = now;
-
-
-  // set "inited" flag:
-  inited = true;
-
-  // get new sensor data:
-  sensor.read();
-
-  // store values to module fields, for convenient access:
-  m_x = sensor.magData.x;
-  m_y = sensor.magData.y;
-  m_z = sensor.magData.z;
-  a_x = sensor.accelData.x;
-  a_y = sensor.accelData.y;
-  a_z = sensor.accelData.z;
-
-  // debug output:
-
-  Serial.print(a_x);
-  Serial.print("\t");
-  Serial.print(a_y);
-  Serial.print("\t");
-  Serial.print(a_z);
-  Serial.print("\t");
-  Serial.print("\n");
-
+  // when all axes have been set, flag module as initialized:
+  if (_x != MAGNETOMETER_NULL_VALUE && _y != MAGNETOMETER_NULL_VALUE && _z != MAGNETOMETER_NULL_VALUE) {
+    inited = true;
+  }
 }

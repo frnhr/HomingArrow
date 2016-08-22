@@ -95,4 +95,19 @@ String partialString(String data, char separator, int index)
 }
 
 
+/**
+ * Check if given value is not close to null value.
+ * Required because in C sometimes 2.0000 == 2.0000 is false
+ */
+bool isCloseTo(double value, double test, double epsilon) {
+  double delta = value - test;
+  delta = (delta < 0) ? -delta : delta;
+  return delta < epsilon;
+}
+/* Convinient negation, for more verbose use with setters */
+bool isSett(double value, double null, double epsilon) {
+  return !isCloseTo(value, null, epsilon);
+}
+
+
 #endif

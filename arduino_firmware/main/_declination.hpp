@@ -6,22 +6,31 @@
 #define DECLINATION_HPP
 
 
+#include <EEPROM.h>
+#include "utils.h"
+
+
+#define DECLINATION_NULL_VALUE 500.0
+#define DECLINATION_NULL_EPSILON 0.1
+
+#ifndef DECLINATION_EEPROM_ADDR
+  #define DECLINATION_EEPROM_ADDR 500
+#endif
+#define DECLINATION_EEPROM_VALUE (DECLINATION_EEPROM_ADDR + 1)
+#define DECLINATION_SIGN 210.0
+
 
 class Declination: public Module
 {
 private:
-  uint16_t * pattern;
-  uint8_t pattern_i;
-  unsigned long last_declination;
+  float _declination = DECLINATION_NULL_VALUE;
 
 public:
-  uint16_t patterns[DECLINATION_INTERVALS_N * DECLINATION_PATTERNS_N + 1];
-  int8_t set_pattern;
+  float setDeclination = DECLINATION_NULL_VALUE;
+  float declination = 0.0;
+  bool inited = false;
   void setup();
   void loop();
-  Declination():
-    patterns{DECLINATION_PATTERNS}
-  {};
 };
 
 Declination* declination = (Declination*) ModulesRegistry::add(new Declination());

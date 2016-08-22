@@ -11,7 +11,7 @@
 
 // Unlike header file (.h), module implementation file (.ino.h) must not be included multiple times:
 #ifdef RAM_USAGE_INO_HPP
-#error The .ino.h file of a module can be included only once (and should be included from main.ino). Did you wanted to include the .h file instead?
+#error The .ino.hpp file of a module can be included only once (and should be included from main.ino). Did you wanted to include the .h file instead?
 #endif
 #define RAM_USAGE_INO_HPP
 

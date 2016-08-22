@@ -21,23 +21,7 @@
 
 // hardware-specific:
 
-#if HARDWARE == HARDWARE_MEGA
-
-  #error Hardware config not implemented
-
-  // blink
-  #define BLINK_LED_PIN 13
-
-
-#elif HARDWARE == HARDWARE_PRO_MINI
-
-  #error Hardware config not implemented
-
-  // blink
-  #define BLINK_LED_PIN 13
-
-
-#elif HARDWARE == HARDWARE_1284
+#if HARDWARE == HARDWARE_1284
 
   // blink
   #define BLINK_LED_PIN 0
@@ -45,6 +29,15 @@
   #define ENCODER_PINS {7, 6, 5, 4, A7, A6, A5, A4}
   // RAM_USAGE:
   #define RAM_TOTAL (1024 * 16)
+
+  // EEPROM addresses:
+  #define ACC_CALIBRATION_EEPROM_ADDR_BASE 200
+  #define MAG_CALIBRATION_EEPROM_ADDR_BASE 300
+
+  #define ARROW_EEPROM_BASE_ADDR 400
+  #define DECLINATION_EEPROM_ADDR 500
+
+  #define TARGET_EEPROM_ADDR_BASE 800  // 20
 
 #else  // #if HARDWARE == HARDWARE_<something>
 

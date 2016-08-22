@@ -1,19 +1,18 @@
 #include <Arduino.h>
 #include "modules.hpp"
 
-#include "_compass.hpp"
-
-#include "_magnetometer.hpp"
-#include "_mag_calibration.hpp"
-#include "hardware_config.h"
-
 
 // Unlike header file (.hpp), module implementation file (.ino.hpp) must not be included multiple times:
 #ifdef COMPASS_INO_HPP
 #error The .ino.hpp file of a module can be included only once (and should be included from main.ino). Did you wanted to include the .hpp file instead?
 #endif
 #define COMPASS_INO_HPP
+#include "_compass.hpp"
 
+
+#ifndef DECLINATION_HPP
+  #warning compass module compiled without declination modules, assuming 0.0 declination!
+#endif
 
 void Compass::setup()
 {
@@ -21,17 +20,35 @@ void Compass::setup()
     for (int i=0; i<COMPASS_AVERAGE_BUFFER; i++) {
         average[i] = 0;
     }
+
+
+    #ifndef DECLINATION_HPP
+      Serial.print(F("Warning: compass module compiled without declination modules, assuming 0.0 declination!\n"));
+    #endif
 }
 
 
 void Compass::loop()
 {
 
+  //TODO make the efort to make compass module independent of other modules
+  // e.g. if no calibrations, take range from precision
+  // if no acc, use only simple x/y magnetic bearing
+  // if no magnetometer... ok, then can break
+
   // don't do anyhing else if not calibrated:
   if (!mag_calibration->calibrated) return;
+  if (!acc_calibration->calibrated) return;
 
-  // also, magnetometer must have been inited:
+  // also, magnetometer and accelerometer must have been inited:
   if (!magnetometer->inited) return;
+  if (!accelerometer->inited) return;
+
+  #ifdef DECLINATION_HPP
+    if (declination->inited) {
+      alpha = declination->declination;
+    }
+  #endif
 
   // enter loop only every COMPASS_LOOP_INTERVAL millis:
   uint32_t now = millis();
@@ -40,49 +57,54 @@ void Compass::loop()
   // set the "inited" flag:
   inited = true;
 
-  // normalize range for each axes:
-  float f = 1.0 * COMPASS_RESOLUTION / mag_calibration->z_range;
-  cal_x = (magnetometer->m_x - mag_calibration->x_min) * f;
-  cal_y = (magnetometer->m_y - mag_calibration->y_min) * f;
-  cal_z = (magnetometer->m_z - mag_calibration->z_min) * f;
-
   // module of the magnetic vector:
   B = sqrt(
-      pow(cal_x, 2.0) +
-      pow(cal_y, 2.0) +
-      pow(cal_z, 2.0)
+      pow(magnetometer->x, 2.0) +
+      pow(magnetometer->y, 2.0) +
+      pow(magnetometer->z, 2.0)
   );
 
+  /*
   Serial.print("\n");
   Serial.print("B: ");
   Serial.println(B);
+  */
 
   // other angles, ref. calculations:
   phi = atan2(
-      -1 * magnetometer->m_y,  // FIXME accelerometer, not magnetometer!
-      magnetometer->m_z
+      -1 * magnetometer->y,  // FIXME accelerometer, not magnetometer!
+      magnetometer->z
   );
+  /*
   Serial.print("phi: ");
   Serial.println(rad2deg(phi));
+  */
+
   theta = atan(
-      -1 * magnetometer->m_x /
-      (magnetometer->m_y * sin(phi) - magnetometer->m_z * cos(phi))
+      -1 * magnetometer->x /
+      (magnetometer->y * sin(phi) - magnetometer->z * cos(phi))
   );
+  /*
   Serial.print("theta: ");
   Serial.println(rad2deg(theta));
+  */
+
   delta = asin(
-      1.0 * cal_x / B * sin(theta) -
-      1.0 * cal_y / B * cos(theta) * sin(phi) +
-      1.0 * cal_z / B * cos(theta) * cos(phi)
+      1.0 * magnetometer->x / B * sin(theta) -
+      1.0 * magnetometer->y / B * cos(theta) * sin(phi) +
+      1.0 * magnetometer->z / B * cos(theta) * cos(phi)
   );
+  /*
   Serial.print("delta: ");
   Serial.println(rad2deg(delta));
+  */
+
   /*
-  Serial.print(cal_x);
+  Serial.print(magnetometer->x);
   Serial.print("\t");
-  Serial.print(cal_y);
+  Serial.print(magnetometer->y);
   Serial.print("\t");
-  Serial.print(cal_z);
+  Serial.print(magnetometer->z);
   Serial.print("\t");
   Serial.print(B);
   Serial.print("\t");
@@ -92,15 +114,15 @@ void Compass::loop()
   //Serial.print(rad2deg(theta));
   //Serial.print("\n");
   Dx = (
-      cal_x * cos(theta) +
-      cal_y * sin(theta) * sin(phi) -
-      cal_z * sin(theta) * cos(phi)
+      magnetometer->x * cos(theta) +
+      magnetometer->y * sin(theta) * sin(phi) -
+      magnetometer->z * sin(theta) * cos(phi)
   ) / (
       B * cos(delta)
   );
   Dy = (
-      cal_y * cos(phi) +
-      cal_z * sin(phi)
+      magnetometer->y * cos(phi) +
+      magnetometer->z * sin(phi)
   ) / (
       B * cos(delta)
   );
@@ -123,4 +145,6 @@ void Compass::loop()
   for (int i=0; i<COMPASS_AVERAGE_BUFFER; i++) {
       azimuth += average[i] / COMPASS_AVERAGE_BUFFER;
   }
+
+  // TODO apply offset!
 }

@@ -2,7 +2,7 @@
 #include "modules.hpp"
 
 #include "_blink.hpp"
-#include "hardware_config.h"
+
 
 // Unlike header file (.hpp), module implementation file (.ino.h) must not be included multiple times:
 #ifdef BLINK_INO_HPP
@@ -11,9 +11,15 @@
 #define BLINK_INO_HPP
 
 
+#ifndef BLINK_LED_PIN
+  #define BLINK_LED_PIN 13
+#endif
+
+
 void Blink::setup()
 {
   pinMode(BLINK_LED_PIN, OUTPUT);
+  _pattern_i = 0;
   pattern_i = 0;
   last_blink = 0;
   // initial pattern:
@@ -32,7 +38,7 @@ void Blink::loop()
     // load new pattern:
     pattern = & patterns[set_pattern * BLINK_INTERVALS_N];
     // start new pattern from the beginning:
-    pattern_i = 0;
+    _pattern_i = 0;
     // start it now:
     last_blink = 0;
     // clear the setter:
@@ -40,13 +46,18 @@ void Blink::loop()
   }
 
   // actually blink, according to pattern:
-  if (millis() - last_blink > pattern[pattern_i]) {  // TODO make millis overflow-safe
+  if (millis() - last_blink > pattern[_pattern_i]) {  // TODO make millis overflow-safe
     last_blink = millis();
-    pattern_i++;
-    if (pattern_i >= BLINK_INTERVALS_N) pattern_i = 0;
-    digitalWrite(BLINK_LED_PIN, pattern_i % 2 == 0);
+    _pattern_i++;
+    if (_pattern_i >= BLINK_INTERVALS_N) _pattern_i = 0;
+    digitalWrite(BLINK_LED_PIN, _pattern_i % 2 == 0);
   }
   //digitalWrite(BLINK_LED_PIN, ! digitalRead(BLINK_LED_PIN));
+
+  // set public pattern_i property:
+  pattern_i = _pattern_i;
+ digitalWrite(BLINK_LED_PIN, HIGH);
+
 
   #ifdef RAM_USAGE_H
   ram->measure(1);

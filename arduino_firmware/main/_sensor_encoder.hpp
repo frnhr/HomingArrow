@@ -1,28 +1,23 @@
 #include <Arduino.h>
 #include "modules.hpp"
 
-#ifndef ENCODER_HPP
-#define ENCODER_HPP
 
+#ifndef SENSOR_ENCODER_HPP
+#define SENSOR_ENCODER_HPP
 
-/***** DEPENDENCIES *****/
 
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 #include "utils.h"
-#include "hardware_config.h"
 
-#ifndef ENCODER_PINS
-#define ENCODER_PINS {2, 3, 4, 5, 6, 7, 8, 9}
+
+#ifndef SENSOR_ENCODER_PINS
+  #define SENSOR_ENCODER_PINS {2, 3, 4, 5, 6, 7, 8, 9}
 #endif
-
-#define ENCODER_EEPROM_SIGNATURE 123  // arbitrary value to recognise configured state
-#define ENCODER_NULL_AZIMUTH 88  // radians
-
-#define ENCODER_RESOLUTION 128
-#define ENCODER_EEPROM_ADDR_SIGN 10
-#define ENCODER_EEPROM_ADDR_OFFSET 11
-#define ENCODER_GRAY_TO_BIN { \
+#define SENSOR_ENCODER_RESOLUTION 128
+#define SENSOR_ENCODER_EEPROM_ADDR_SIGN 10
+#define SENSOR_ENCODER_EEPROM_ADDR_OFFSET 11
+#define SENSOR_ENCODER_GRAY_TO_BIN { \
         255,  56,  40,  55,  24,   0,  39,  52, \
           8,  57, 255, 255,  23, 255,  36,  13, \
         120, 255,  41,  54, 255, 255, 255,  53, \
@@ -58,30 +53,25 @@
         }
 
 
-class Encoder: public Module
+class SensorEncoder: public Module
 {
 private:
-  unsigned int gray_code = 0;             // raw value read from the encoder
-  unsigned int position = 255;             // most recent successfully read value
-  unsigned int last_error = 255;           // last error value reported (to prevent repeating)
+  unsigned int gray_code = 0;                     // raw value read from the encoder
+  unsigned int position = 255;                    // most recent successfully read value
+  unsigned int last_error = 255;                  // last error value reported (to prevent repeating)
   const unsigned int resolution = \
-                  ENCODER_RESOLUTION;     // number of positions for a full circle
-  double offset = 0.0;                    // angle between North and encoder zero position
-  const byte ENCODER_GRAY2BIN[256] = \
-                  ENCODER_GRAY_TO_BIN;    // matrix to decode encoder from gray code without much math
-  const int pins[8] = ENCODER_PINS;       // Arduino pins that encoder is connected to
-  bool configured = false;                // EEPROM initialed?
+            SENSOR_ENCODER_RESOLUTION;            // number of positions for a full circle
+  const byte SENSOR_ENCODER_GRAY2BIN[256] = \
+                  SENSOR_ENCODER_GRAY_TO_BIN;     // matrix to decode encoder from gray code without much math
+  const int pins[8] = SENSOR_ENCODER_PINS;        // Arduino pins that encoder is connected to
 
 public:
-  bool inited = false;                    // ever read a good value?
-  double azimuth = 0.0;                   // angle to the geographic North (if used with GPS)
-  double set_offset = ENCODER_NULL_AZIMUTH;
-  double set_azimuth = ENCODER_NULL_AZIMUTH;
+  bool inited = false;                            // ever read a good value?
+  double azimuth = 0.0;                           // angle to the geographic North (if used with GPS)
   void setup();
   void loop();
-  Encoder(){};
 };
 
-Encoder* encoder = (Encoder*) ModulesRegistry::add(new Encoder());
+SensorEncoder* sensor_encoder = (SensorEncoder*) ModulesRegistry::add(new SensorEncoder());
 
-#endif  // #ifndef ENCODER_HPP
+#endif  // #ifndef SENSOR_ENCODER_HPP
